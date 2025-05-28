@@ -1,10 +1,12 @@
 package com.teamproject.TP_backend.service;
 
+import com.teamproject.TP_backend.config.security.JwtUtil;
 import com.teamproject.TP_backend.controller.dto.LoginRequestDTO;
 import com.teamproject.TP_backend.controller.dto.SignupRequestDTO;
 import com.teamproject.TP_backend.controller.dto.UserUpdateRequestDto;
 import com.teamproject.TP_backend.entity.User;
 import com.teamproject.TP_backend.repository.UserRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public void signup(SignupRequestDTO dto) {
         if (userRepository.existsByEmail(dto.email())) {
@@ -32,15 +35,27 @@ public class UserService {
         userRepository.save(user);
     }
 
+//    public String login(LoginRequestDTO dto) {
+//        User user = userRepository.findByEmail(dto.email())
+//                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
+//
+//        if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
+//            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        return "로그인 성공";
+//    }
+
     public String login(LoginRequestDTO dto) {
         User user = userRepository.findByEmail(dto.email())
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
+                .orElseThrow(() -> new RuntimeException("해당 이메일의 유저가 없습니다."));
 
         if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        return "로그인 성공";
+        // JWT 토큰 생성
+        return jwtUtil.createToken(user.getEmail());
     }
 
     public boolean updateUser(Long id, UserUpdateRequestDto dto) {
