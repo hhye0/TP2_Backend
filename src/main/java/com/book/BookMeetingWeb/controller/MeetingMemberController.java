@@ -28,5 +28,4 @@ public class MeetingMemberController {
         meetingMemberService.respondToParticipation(meetingId, userId, approve);
         return ResponseEntity.ok().build();
     }
-
 }

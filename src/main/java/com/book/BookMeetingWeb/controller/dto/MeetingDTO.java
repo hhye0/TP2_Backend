@@ -1,21 +1,23 @@
 package com.book.BookMeetingWeb.controller.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
 public class MeetingDTO {
+    private Long id;
     private String title;
     private String bookTitle;
     private String bookAuthor;
     private String bookCover;
     private String bookCategory;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private int maxMembers;
+    private boolean active;
+    private List<ParticipantDTO> participants;
 }
