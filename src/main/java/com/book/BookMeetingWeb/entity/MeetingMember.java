@@ -13,6 +13,7 @@ import java.time.LocalDate;
                 @UniqueConstraint(columnNames = {"meeting_id", "user_id"})
         }
 )
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,6 +36,10 @@ public class MeetingMember {
     @Column(name = "joined_at", nullable = false)
     private LocalDate joinedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ParticipationStatus status;
+
     @Builder
     public static MeetingMember create(Meeting meeting, User user) {
         return MeetingMember.builder()
@@ -43,4 +48,11 @@ public class MeetingMember {
                 .joinedAt(LocalDate.now())
                 .build();
     }
+
+    public enum ParticipationStatus {
+        PENDING,  // 신청 상태
+        APPROVED, // 수락됨
+        REJECTED  // 거절됨
+    }
+
 }

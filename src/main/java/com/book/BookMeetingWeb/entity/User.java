@@ -17,7 +17,7 @@ public class User {
     @Column(name = "user_id", nullable = false)
     private Long id;  // 회원 고유 식별자 (시스템 자동 생성)
 
-    @Column(name = "email", nullable = false, unique = true, length = 10)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;  // 사용자 이메일
 
     @Column(name = "password", nullable = false, length = 255)
