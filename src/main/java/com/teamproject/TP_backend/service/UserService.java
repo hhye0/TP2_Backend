@@ -2,11 +2,14 @@ package com.teamproject.TP_backend.service;
 
 import com.teamproject.TP_backend.controller.dto.LoginRequestDTO;
 import com.teamproject.TP_backend.controller.dto.SignupRequestDTO;
+import com.teamproject.TP_backend.controller.dto.UserUpdateRequestDto;
 import com.teamproject.TP_backend.entity.User;
 import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,35 @@ public class UserService {
         }
 
         return "로그인 성공";
+    }
+
+    public boolean updateUser(Long id, UserUpdateRequestDto dto) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            return false;
+        }
+
+        User user = optionalUser.get();
+
+        if (dto.getName() != null && !dto.getName().isEmpty()) {
+            user.setName(dto.getName());
+        }
+        if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
+            user.setEmail(dto.getEmail());
+        }
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            return false;
+        }
+        userRepository.deleteById(id);
+        return true;
     }
 }

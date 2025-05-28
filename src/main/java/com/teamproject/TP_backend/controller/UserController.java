@@ -2,6 +2,7 @@ package com.teamproject.TP_backend.controller;
 
 import com.teamproject.TP_backend.controller.dto.LoginRequestDTO;
 import com.teamproject.TP_backend.controller.dto.SignupRequestDTO;
+import com.teamproject.TP_backend.controller.dto.UserUpdateRequestDto;
 import com.teamproject.TP_backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,26 @@ public class UserController {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+        }
+    }
+
+    @PatchMapping("/users/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequestDto dto) {
+        boolean updated = userService.updateUser(id, dto);
+        if (updated) {
+            return ResponseEntity.ok("회원정보 수정 완료");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원 정보를 찾을 수 없습니다.");
+        }
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+            return ResponseEntity.ok("계정 탈퇴 완료");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원 정보를 찾을 수 없습니다.");
         }
     }
 }
