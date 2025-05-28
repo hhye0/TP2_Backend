@@ -1,0 +1,42 @@
+package com.teamproject.TP_backend.service;
+
+import com.teamproject.TP_backend.controller.dto.LoginRequestDTO;
+import com.teamproject.TP_backend.controller.dto.SignupRequestDTO;
+import com.teamproject.TP_backend.entity.User;
+import com.teamproject.TP_backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public void signup(SignupRequestDTO dto) {
+        if (userRepository.existsByEmail(dto.email())) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
+
+        User user = User.builder()
+                .name(dto.name())
+                .email(dto.email())
+                .password(passwordEncoder.encode(dto.password()))
+                .build();
+
+        userRepository.save(user);
+    }
+
+    public String login(LoginRequestDTO dto) {
+        User user = userRepository.findByEmail(dto.email())
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
+
+        if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return "로그인 성공";
+    }
+}
