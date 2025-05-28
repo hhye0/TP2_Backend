@@ -3,10 +3,9 @@ package com.teamproject.TP_backend.service;
 import com.teamproject.TP_backend.config.security.JwtUtil;
 import com.teamproject.TP_backend.controller.dto.LoginRequestDTO;
 import com.teamproject.TP_backend.controller.dto.SignupRequestDTO;
-import com.teamproject.TP_backend.controller.dto.UserUpdateRequestDto;
+import com.teamproject.TP_backend.controller.dto.UserUpdateRequestDTO;
 import com.teamproject.TP_backend.entity.User;
 import com.teamproject.TP_backend.repository.UserRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,7 +57,7 @@ public class UserService {
         return jwtUtil.createToken(user.getEmail());
     }
 
-    public boolean updateUser(Long id, UserUpdateRequestDto dto) {
+    public boolean updateUser(Long id, UserUpdateRequestDTO dto) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
             return false;

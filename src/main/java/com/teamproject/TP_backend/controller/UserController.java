@@ -1,6 +1,6 @@
 package com.teamproject.TP_backend.controller;
 
-import com.teamproject.TP_backend.controller.dto.UserUpdateRequestDto;
+import com.teamproject.TP_backend.controller.dto.UserUpdateRequestDTO;
 import com.teamproject.TP_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequestDto dto) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequestDTO dto) {
         boolean updated = userService.updateUser(id, dto);
         if (updated) {
             return ResponseEntity.ok("회원정보 수정 완료");
