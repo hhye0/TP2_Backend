@@ -3,7 +3,7 @@ INSERT INTO meetings (
      book_category, start_date, end_date,
      max_members, is_active, created_at, updated_at
  ) VALUES (
-     '햄과 함께하는 심리학 독서모임',
+     '함께하는 심리학 독서모임',
      '자기 이해의 심리학',
      '이민규',
      'https://example.com/psychology.jpg',
@@ -21,7 +21,7 @@ INSERT INTO meetings (
      book_category, start_date, end_date,
      max_members, is_active, created_at, updated_at
  ) VALUES (
-     '햄과 철학하는 밤',
+     '철학하는 밤',
      '니체의 말',
      '프리드리히 니체',
      'https://example.com/nietzsche.jpg',

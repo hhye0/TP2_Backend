@@ -19,7 +19,7 @@ public class TestDataRunner implements CommandLineRunner {
     public void run(String... args) {
         if (meetingRepository.count() == 0) {
             Meeting meeting1 = Meeting.builder()
-                    .title("햄과 함께하는 심리학 독서모임")
+                    .title("함께하는 심리학 독서모임")
                     .bookTitle("자기 이해의 심리학")
                     .bookAuthor("이민규")
                     .bookCover("https://example.com/psychology.jpg")
@@ -31,7 +31,7 @@ public class TestDataRunner implements CommandLineRunner {
                     .build();
 
             Meeting meeting2 = Meeting.builder()
-                    .title("햄과 철학하는 밤")
+                    .title("철학하는 밤")
                     .bookTitle("니체의 말")
                     .bookAuthor("프리드리히 니체")
                     .bookCover("https://example.com/nietzsche.jpg")
@@ -43,7 +43,7 @@ public class TestDataRunner implements CommandLineRunner {
                     .build();
 
             meetingRepository.saveAll(List.of(meeting1, meeting2));
-            System.out.println("🎉 더미 데이터 2건 추가 완료!");
+            System.out.println("더미 데이터 2건 추가 완료!");
         }
     }
 }
