@@ -1,5 +1,6 @@
 package com.teamproject.TP_backend.controller;
 
+import com.teamproject.TP_backend.config.CurrentUser;
 import com.teamproject.TP_backend.config.security.CustomUserDetails;
 import com.teamproject.TP_backend.service.MeetingMemberService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class MeetingMemberController {
     @PostMapping("/{meetingId}/join")
     public ResponseEntity<String> joinMeeting(
             @PathVariable Long meetingId,
-            Authentication authentication) {
-        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUser().getId();
+            @CurrentUser CustomUserDetails userDetails) {
+        Long userId = userDetails.getUser().getId();
         meetingMemberService.joinMeeting(meetingId, userId);
         return ResponseEntity.ok("참여 신청이 완료되었습니다.");
     }

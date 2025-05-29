@@ -1,11 +1,9 @@
 package com.teamproject.TP_backend.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-@Target(ElementType.PARAMETER)
+@Target(ElementType.PARAMETER)  // 메서드 파라미터에 붙임
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface CurrentUser {
 }

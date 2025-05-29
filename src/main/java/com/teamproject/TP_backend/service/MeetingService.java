@@ -6,7 +6,6 @@ import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,14 +31,11 @@ public class MeetingService {
         return toDTO(meeting);
     }
 
-    public MeetingDTO createMeeting(MeetingDTO dto, org.springframework.security.core.userdetails.User user) {
-        //현재 로그인된 사용자 정보 -> host 로 저장
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User host = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("로그인된 사용자를 찾을 수 없습니다."));
+    public MeetingDTO createMeeting(MeetingDTO dto, User user) {
         // 2. host 설정 포함
         Meeting meeting = Meeting.builder()
                 .title(dto.getTitle())
+                .host(user)
                 .bookTitle(dto.getBookTitle())
                 .bookAuthor(dto.getBookAuthor())
                 .bookCover(dto.getBookCover())
@@ -47,17 +43,20 @@ public class MeetingService {
                 .startDate(dto.getStartDate())
                 .maxMembers(dto.getMaxMembers())
                 .isActive(true)
-                .host(host)
                 .build();
 
         Meeting saved = meetingRepository.save(meeting);
         return toDTO(saved);
     }
 
-    public MeetingDTO updateMeeting(Long id, MeetingDTO dto, org.springframework.security.core.userdetails.User user) {
+    public MeetingDTO updateMeeting(Long id, MeetingDTO dto, User user) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
 
+        // host가 로그인한 user와 동일한지 체크 (권한 검사)
+        if (!meeting.getHost().getId().equals(user.getId())) {
+            throw new RuntimeException("권한이 없습니다.");
+        }
         meeting.setTitle(dto.getTitle());
         meeting.setBookTitle(dto.getBookTitle());
         meeting.setBookAuthor(dto.getBookAuthor());
@@ -70,7 +69,7 @@ public class MeetingService {
         return toDTO(updated);
     }
 
-    public void deleteMeeting(Long id, org.springframework.security.core.userdetails.User user) {
+    public void deleteMeeting(Long id, User user) {
         meetingRepository.deleteById(id);
     }
 
