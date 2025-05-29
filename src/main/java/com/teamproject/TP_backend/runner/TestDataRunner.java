@@ -1,11 +1,12 @@
 package com.teamproject.TP_backend.runner;
 
-import com.teamproject.TP_backend.entity.Meeting;
-import com.teamproject.TP_backend.entity.User;
+import com.teamproject.TP_backend.domain.entity.Meeting;
+import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -14,11 +15,13 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Order(1)
 public class TestDataRunner implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MeetingRepository meetingRepository;
+    private User host;
 
     @Override
     public void run(String... args) {
@@ -28,7 +31,7 @@ public class TestDataRunner implements CommandLineRunner {
                     .email("test@email.com")
                     .password(passwordEncoder.encode("1234abcd!"))
                     .build();
-            userRepository.save(user);
+            host = userRepository.save(user);
             System.out.println(">> 테스트 유저 생성 완료");
         }
 
@@ -36,24 +39,24 @@ public class TestDataRunner implements CommandLineRunner {
         if (meetingRepository.count() == 0) {
             Meeting meeting1 = Meeting.builder()
                     .title("함께하는 심리학 독서모임")
+                    .host(host)
                     .bookTitle("자기 이해의 심리학")
                     .bookAuthor("이민규")
                     .bookCover("https://example.com/psychology.jpg")
                     .bookCategory("심리학")
                     .startDate(LocalDateTime.of(2025, 6, 10, 10, 0))
-                    .endDate(LocalDateTime.of(2025, 6, 24, 10, 0))
                     .maxMembers(15)
                     .isActive(true)
                     .build();
 
             Meeting meeting2 = Meeting.builder()
                     .title("철학하는 밤")
+                    .host(host)
                     .bookTitle("니체의 말")
                     .bookAuthor("프리드리히 니체")
                     .bookCover("https://example.com/nietzsche.jpg")
                     .bookCategory("철학")
                     .startDate(LocalDateTime.of(2025, 6, 5, 19, 0))
-                    .endDate(LocalDateTime.of(2025, 6, 20, 21, 0))
                     .maxMembers(10)
                     .isActive(true)
                     .build();

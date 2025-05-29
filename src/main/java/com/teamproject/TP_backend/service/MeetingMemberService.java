@@ -1,8 +1,8 @@
 package com.teamproject.TP_backend.service;
 
-import com.teamproject.TP_backend.entity.Meeting;
-import com.teamproject.TP_backend.entity.MeetingMember;
-import com.teamproject.TP_backend.entity.User;
+import com.teamproject.TP_backend.domain.entity.Meeting;
+import com.teamproject.TP_backend.domain.entity.MeetingMember;
+import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.MeetingMemberRepository;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;

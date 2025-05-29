@@ -1,6 +1,5 @@
-package com.teamproject.TP_backend.entity;
+package com.teamproject.TP_backend.domain.entity;
 
-import com.teamproject.TP_backend.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,6 +45,7 @@ public class MeetingMember {
                 .meeting(meeting)
                 .user(user)
                 .joinedAt(LocalDate.now())
+                .status(ParticipationStatus.PENDING)
                 .build();
     }
 

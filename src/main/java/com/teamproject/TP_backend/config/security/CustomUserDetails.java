@@ -1,6 +1,6 @@
 package com.teamproject.TP_backend.config.security;
 
-import com.teamproject.TP_backend.entity.User;
+import com.teamproject.TP_backend.domain.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +16,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 현재는 권한 없음
-        return Collections.emptyList();
+        return Collections.singletonList(() -> "ROLE_" + user.getRole());
     }
 
     @Override
