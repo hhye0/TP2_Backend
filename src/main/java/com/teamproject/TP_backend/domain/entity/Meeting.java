@@ -1,4 +1,4 @@
-package com.teamproject.TP_backend.entity;
+package com.teamproject.TP_backend.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,6 +46,7 @@ public class Meeting {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
+    // 확인 필요
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -61,6 +62,17 @@ public class Meeting {
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MeetingMember> participants = new ArrayList<>();
+
+    // 양방향 연관관계 편의 메서드 추가
+    public void addParticipant(MeetingMember participant) {
+        participants.add(participant);
+        participant.setMeeting(this); // 반대편도 설정
+    }
+
+    public void removeParticipant(MeetingMember participant) {
+        participants.remove(participant);
+        participant.setMeeting(null); // 끊어줌
+    }
 
     @Builder
     public Meeting(String title, String bookTitle, String bookAuthor, String bookCover,

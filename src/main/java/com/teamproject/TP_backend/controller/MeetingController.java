@@ -1,8 +1,9 @@
 package com.teamproject.TP_backend.controller;
 
 import com.teamproject.TP_backend.controller.dto.MeetingDTO;
-import com.teamproject.TP_backend.entity.Meeting;
+
 import com.teamproject.TP_backend.service.MeetingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +19,22 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     @GetMapping
-    public ResponseEntity<List<Meeting>> getAllMeetings() {
+    public ResponseEntity<List<MeetingDTO>> getAllMeetings() {
         return ResponseEntity.ok(meetingService.getAllMeetings());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Meeting> getMeeting(@PathVariable Long id) {
+    public ResponseEntity<MeetingDTO> getMeeting(@PathVariable Long id) {
         return ResponseEntity.ok(meetingService.getMeeting(id));
     }
 
     @PostMapping
-    public ResponseEntity<Meeting> createMeeting(@RequestBody MeetingDTO dto) {
+    public ResponseEntity<MeetingDTO> createMeeting(@RequestBody @Valid MeetingDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(meetingService.createMeeting(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Meeting> updateMeeting(@PathVariable Long id, @RequestBody MeetingDTO dto) {
+    public ResponseEntity<MeetingDTO> updateMeeting(@PathVariable Long id, @RequestBody @Valid MeetingDTO dto) {
         return ResponseEntity.ok(meetingService.updateMeeting(id, dto));
     }
 

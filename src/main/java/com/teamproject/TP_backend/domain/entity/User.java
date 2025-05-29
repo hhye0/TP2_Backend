@@ -1,6 +1,8 @@
 
-package com.teamproject.TP_backend.entity;
+package com.teamproject.TP_backend.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.teamproject.TP_backend.domain.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,7 +37,14 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
+    // 역할
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.USER;
+
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Meeting> hostedMeetings = new ArrayList<>();
 
 
