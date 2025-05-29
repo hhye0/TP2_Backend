@@ -6,6 +6,7 @@ import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -14,11 +15,13 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Order(1)
 public class TestDataRunner implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MeetingRepository meetingRepository;
+    private User host;
 
     @Override
     public void run(String... args) {
@@ -28,7 +31,7 @@ public class TestDataRunner implements CommandLineRunner {
                     .email("test@email.com")
                     .password(passwordEncoder.encode("1234abcd!"))
                     .build();
-            userRepository.save(user);
+            host = userRepository.save(user);
             System.out.println(">> 테스트 유저 생성 완료");
         }
 
@@ -43,6 +46,8 @@ public class TestDataRunner implements CommandLineRunner {
                     .startDate(LocalDateTime.of(2025, 6, 10, 10, 0))
                     .maxMembers(15)
                     .isActive(true)
+                    .host(host)  // ✅ host 필드 설정
+
                     .build();
 
             Meeting meeting2 = Meeting.builder()
@@ -54,6 +59,8 @@ public class TestDataRunner implements CommandLineRunner {
                     .startDate(LocalDateTime.of(2025, 6, 5, 19, 0))
                     .maxMembers(10)
                     .isActive(true)
+                    .host(host)  // ✅ host 필드 설정
+
                     .build();
 
             meetingRepository.saveAll(List.of(meeting1, meeting2));

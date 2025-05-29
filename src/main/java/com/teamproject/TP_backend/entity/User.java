@@ -1,6 +1,7 @@
 
 package com.teamproject.TP_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -36,6 +37,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Meeting> hostedMeetings = new ArrayList<>();
 
 

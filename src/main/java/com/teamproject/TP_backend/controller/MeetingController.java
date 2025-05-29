@@ -18,7 +18,7 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     @GetMapping
-    public ResponseEntity<List<Meeting>> getAllMeetings() {
+    public ResponseEntity<List<MeetingDTO>> getAllMeetings() { //✅
         return ResponseEntity.ok(meetingService.getAllMeetings());
     }
 

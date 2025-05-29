@@ -7,6 +7,7 @@ import com.teamproject.TP_backend.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,11 +15,13 @@ import java.util.List;
 @Configuration
 public class DataInitializer {
 
+    @Order(2)
     @Bean
     public CommandLineRunner initData(MeetingRepository meetingRepository, UserRepository userRepository) {
         return args -> {
             if (meetingRepository.count() == 0) {
                 LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
+
 
                 // ID가 1인 유저가 있다고 가정
                 User host = userRepository.findById(1L).orElseThrow(() ->

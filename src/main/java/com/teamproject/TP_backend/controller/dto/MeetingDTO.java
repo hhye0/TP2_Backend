@@ -18,5 +18,7 @@ public class MeetingDTO {
     private LocalDateTime startDate;
     private int maxMembers;
     private boolean active;
+    private String hostName; // ✅ 추가된 필드
+
     private List<ParticipantDTO> participants;
 }
