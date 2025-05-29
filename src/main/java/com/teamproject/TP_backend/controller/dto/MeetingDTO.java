@@ -19,4 +19,5 @@ public class MeetingDTO {
     private int maxMembers;
     private boolean active;
     private List<ParticipantDTO> participants;
+    private Long hostId; // ✅ host_id 전달을 위한 필드 추가
 }
