@@ -32,7 +32,7 @@ public class MeetingService {
         return toDTO(meeting);
     }
 
-    public MeetingDTO createMeeting(MeetingDTO dto) {
+    public MeetingDTO createMeeting(MeetingDTO dto, org.springframework.security.core.userdetails.User user) {
         //현재 로그인된 사용자 정보 -> host 로 저장
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User host = userRepository.findByEmail(email)
@@ -54,7 +54,7 @@ public class MeetingService {
         return toDTO(saved);
     }
 
-    public MeetingDTO updateMeeting(Long id, MeetingDTO dto) {
+    public MeetingDTO updateMeeting(Long id, MeetingDTO dto, org.springframework.security.core.userdetails.User user) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
 
@@ -70,7 +70,7 @@ public class MeetingService {
         return toDTO(updated);
     }
 
-    public void deleteMeeting(Long id) {
+    public void deleteMeeting(Long id, org.springframework.security.core.userdetails.User user) {
         meetingRepository.deleteById(id);
     }
 
