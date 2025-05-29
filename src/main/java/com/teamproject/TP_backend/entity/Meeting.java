@@ -54,13 +54,18 @@ public class Meeting {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // 호스트(생성자)와의 관계 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_id", nullable = false)
+    private User host;
+
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MeetingMember> participants = new ArrayList<>();
 
     @Builder
     public Meeting(String title, String bookTitle, String bookAuthor, String bookCover,
-                   String bookCategory, LocalDateTime startDate, LocalDateTime endDate,
-                   int maxMembers, boolean isActive) {
+                   String bookCategory, LocalDateTime startDate,
+                   int maxMembers, boolean isActive, User host) {
         this.title = title;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -69,11 +74,12 @@ public class Meeting {
         this.startDate = startDate;
         this.maxMembers = maxMembers;
         this.isActive = isActive;
+        this.host =host;
     }
 
     public void update(String title, String bookTitle, String bookAuthor, String bookCover,
-                       String bookCategory, LocalDateTime startDate, LocalDateTime endDate,
-                       int maxMembers) {
+                       String bookCategory, LocalDateTime startDate,
+                       int maxMembers, User host) {
         this.title = title;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -81,5 +87,6 @@ public class Meeting {
         this.bookCategory = bookCategory;
         this.startDate = startDate;
         this.maxMembers = maxMembers;
+        this.host = host;
     }
 }

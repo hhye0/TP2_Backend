@@ -41,7 +41,6 @@ public class TestDataRunner implements CommandLineRunner {
                     .bookCover("https://example.com/psychology.jpg")
                     .bookCategory("심리학")
                     .startDate(LocalDateTime.of(2025, 6, 10, 10, 0))
-                    .endDate(LocalDateTime.of(2025, 6, 24, 10, 0))
                     .maxMembers(15)
                     .isActive(true)
                     .build();
@@ -53,7 +52,6 @@ public class TestDataRunner implements CommandLineRunner {
                     .bookCover("https://example.com/nietzsche.jpg")
                     .bookCategory("철학")
                     .startDate(LocalDateTime.of(2025, 6, 5, 19, 0))
-                    .endDate(LocalDateTime.of(2025, 6, 20, 21, 0))
                     .maxMembers(10)
                     .isActive(true)
                     .build();

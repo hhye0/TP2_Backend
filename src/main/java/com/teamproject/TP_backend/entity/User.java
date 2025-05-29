@@ -20,7 +20,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
+    @Column(nullable = false)
     private Long id;
 
     @Column(nullable = false)
@@ -35,7 +35,7 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Meeting> hostedMeetings = new ArrayList<>();
 
 
