@@ -1,28 +1,59 @@
+
 package com.teamproject.TP_backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Getter @Setter
 @Builder
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
-    private Long id;  // 회원 고유 식별자 (시스템 자동 생성)
+    private Long id;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
-    private String email;  // 사용자 이메일
+    @Column(nullable = false)
+    @NotBlank(message = "Name은 필수 입력항목입니다.")
+    private String name;
 
-    @Column(name = "password", nullable = false, length = 255)
-    private String password;  // 암호화된 비밀번호 (BCrypt 암호화)
+    @Column(nullable = false, unique = true, length = 100)
+    @NotBlank(message = "Email은 필수 입력항목입니다. ")
+    @Email
+    private String email;
 
-    @Column(name = "name", nullable = false, length = 255)
-    private String name;  // 사용자 이름
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Meeting> hostedMeetings = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MeetingMember> meetingMemberships = new ArrayList<>();
+
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Community> posts = new ArrayList<>();
+//
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Comment> comments = new ArrayList<>();
+//
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Review> reviews = new ArrayList<>();
+//
+//
+
 }

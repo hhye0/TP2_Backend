@@ -1,10 +1,13 @@
 package com.teamproject.TP_backend.runner;
 
 import com.teamproject.TP_backend.entity.Meeting;
+import com.teamproject.TP_backend.entity.User;
 import com.teamproject.TP_backend.repository.MeetingRepository;
+import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,10 +16,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestDataRunner implements CommandLineRunner {
 
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final MeetingRepository meetingRepository;
 
     @Override
     public void run(String... args) {
+        if (!userRepository.existsByEmail("test@email.com")) {
+            User user = User.builder()
+                    .name("홍길동")
+                    .email("test@email.com")
+                    .password(passwordEncoder.encode("1234abcd!"))
+                    .build();
+            userRepository.save(user);
+            System.out.println(">> 테스트 유저 생성 완료");
+        }
+
+        // 미팅/ 게시물
         if (meetingRepository.count() == 0) {
             Meeting meeting1 = Meeting.builder()
                     .title("함께하는 심리학 독서모임")
@@ -45,5 +61,6 @@ public class TestDataRunner implements CommandLineRunner {
             meetingRepository.saveAll(List.of(meeting1, meeting2));
             System.out.println("더미 데이터 2건 추가 완료!");
         }
+
     }
 }
