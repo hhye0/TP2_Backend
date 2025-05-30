@@ -1,3 +1,3 @@
-## 유저 역할(Role) 추가: USER / ADMIN
+## read - book cover, author, review api 구현
 
-## RBAC 기반 관리자 기능/일반 사용자 기능 분리
+- 알라딘 open api를 이용해 책 제목, 저자, 표지를 가져옴
