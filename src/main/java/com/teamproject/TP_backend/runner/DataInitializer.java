@@ -1,12 +1,13 @@
 package com.teamproject.TP_backend.runner;
 
-import com.teamproject.TP_backend.entity.Meeting;
-import com.teamproject.TP_backend.entity.User;
+import com.teamproject.TP_backend.domain.entity.Meeting;
+import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Configuration
 public class DataInitializer {
 
+    @Order(2)
     @Bean
     public CommandLineRunner initData(MeetingRepository meetingRepository, UserRepository userRepository) {
         return args -> {

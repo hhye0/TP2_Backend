@@ -1,10 +1,11 @@
 package com.teamproject.TP_backend.config.security;
 
+import com.teamproject.TP_backend.exception.InvalidJwtException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -14,48 +15,58 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "mysecretkeymysecretkeymysecretkey123!"; // 32바이트 이상 추천
+    @Value("${jwt.secret}")
+    private String secretKey;
     private final long EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간 토큰 유효
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    // JwtUtil.java 에 추가
-    public String generateToken(Authentication authentication) {
-        // 인증 객체에서 UserDetails를 꺼내 이메일(또는 username) 얻기
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();  // 보통 username은 email
-
-        return createToken(email);  // 기존에 만든 createToken(email) 메서드 재활용
-    }
-
-    // 토큰 생성
-    public String createToken(String email) {
+    // 토큰 생성 메서드 (email, role 모두 받는 버전)
+    public String createToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // 토큰에서 이메일 추출
-    public String extractEmail(String token) {
-        return parseClaims(token).getSubject();
+    // 인증(Authentication) 객체에서 토큰 생성 - CustomUserDetails에서 role 추출하여 호출하도록 수정
+    public String generateToken(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();  // username = email로 가정
+        String role = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                .orElse("ROLE_USER");  // 기본 역할 지정
+
+        return createToken(email, role);
     }
 
-    // 토큰 유효성 검사
-    public boolean validateToken(String token, String username) {
+    // 토큰에서 이메일만 추출 (예외 발생 시 InvalidJwtException 던짐)
+    public String extractEmail(String token) {
         try {
-            String extractedUsername = extractEmail(token);
-            return extractedUsername.equals(username) && !isTokenExpired(token);
+            return parseClaims(token).getSubject();
         } catch (Exception e) {
-            return false;
+            throw new InvalidJwtException("Invalid JWT token", e);
         }
     }
 
-    private Claims parseClaims(String token) {
+    // 토큰 유효성 검사 (이메일 비교 없이 서명 + 만료만 확인)
+    public boolean validateToken(String token) {
+        try {
+            // parseClaims()가 서명 검증과 토큰 만료 확인 수행
+            Claims claims = parseClaims(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            throw new InvalidJwtException("Invalid JWT token", e);
+        }
+    }
+
+    public Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -71,7 +82,4 @@ public class JwtUtil {
             return true;  // 토큰 파싱 실패 시 만료된 것으로 처리
         }
     }
-
-
-
 }

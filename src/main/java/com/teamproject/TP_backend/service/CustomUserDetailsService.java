@@ -2,7 +2,7 @@
 package com.teamproject.TP_backend.service;
 
 import com.teamproject.TP_backend.config.security.CustomUserDetails;
-import com.teamproject.TP_backend.entity.User;
+import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

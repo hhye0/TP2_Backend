@@ -1,6 +1,6 @@
 package com.teamproject.TP_backend;
 
-import com.teamproject.TP_backend.entity.User;
+import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
