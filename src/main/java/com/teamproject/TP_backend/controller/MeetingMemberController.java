@@ -24,7 +24,6 @@ public class MeetingMemberController {
         return ResponseEntity.ok("참여 신청이 완료되었습니다.");
     }
 
-
     @PostMapping("/{meetingId}/respond")
     public ResponseEntity<Void> respondToJoin(
             @PathVariable Long meetingId,

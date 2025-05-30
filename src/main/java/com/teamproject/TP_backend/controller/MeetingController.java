@@ -37,7 +37,6 @@ public class MeetingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(meetingService.createMeeting(dto, user));
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<MeetingDTO> updateMeeting(@PathVariable Long id, @RequestBody @Valid MeetingDTO dto, @CurrentUser User user) {
         return ResponseEntity.ok(meetingService.updateMeeting(id, dto, user));
