@@ -79,4 +79,8 @@ public class UserService {
         userRepository.deleteById(id);
         return true;
     }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
 }

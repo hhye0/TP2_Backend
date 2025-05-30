@@ -3,7 +3,7 @@ package com.teamproject.TP_backend.controller.dto;
 import lombok.Data;
 
 @Data
-public class BookItem {
+public class BookItemDTO {
     private String title;
     private String link;
     private String author;

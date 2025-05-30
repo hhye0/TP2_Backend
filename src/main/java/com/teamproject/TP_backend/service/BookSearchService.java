@@ -1,13 +1,12 @@
 package com.teamproject.TP_backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teamproject.TP_backend.controller.dto.AladinSearchResult;
-import com.teamproject.TP_backend.controller.dto.BookTitleAuthorCoverDto;
+import com.teamproject.TP_backend.controller.dto.AladinSearchResultDTO;
+import com.teamproject.TP_backend.controller.dto.BookDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -25,7 +24,7 @@ public class BookSearchService {
 
     private final String ALADIN_API_URL = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx";
 
-    public List<BookTitleAuthorCoverDto> searchBooksByTitle(String title) throws Exception {
+    public List<BookDTO> searchBooksByTitle(String title) throws Exception {
         URI uri = UriComponentsBuilder.fromHttpUrl(ALADIN_API_URL)
                 .queryParam("ttbkey", apiKey)
                 .queryParam("Query", title)
@@ -40,11 +39,12 @@ public class BookSearchService {
 
         String jsonResponse = restTemplate.getForObject(uri, String.class);
 
-        AladinSearchResult result = objectMapper.readValue(jsonResponse, AladinSearchResult.class);
+        AladinSearchResultDTO result = objectMapper.readValue(jsonResponse, AladinSearchResultDTO.class);
 
         // BookItem 리스트에서 필요한 데이터만 추출
         return result.getItems().stream()
-                .map(item -> new BookTitleAuthorCoverDto(
+                .map(item -> new BookDTO(
+                        item.getIsbn(),
                         item.getTitle(),
                         item.getAuthor(),
                         item.getCover()

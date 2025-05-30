@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class AladinSearchResult {
+public class AladinSearchResultDTO {
     private String version;
     private String title;
     private String link;
@@ -20,6 +20,6 @@ public class AladinSearchResult {
     private String searchCategoryName;
 
     @JsonProperty("item")
-    private List<BookItem> items;
+    private List<BookItemDTO> items;
 
 }
