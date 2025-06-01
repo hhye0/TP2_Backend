@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 // 모임 참여(신청 및 승인/거절) 관련 비즈니스 로직을 처리하는 서비스 클래스
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class MeetingMemberService {
     private final MeetingRepository meetingRepository;
     private final UserRepository userRepository;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final ChatService chatService;
 
 //     사용자가 특정 모임에 참여 신청하는 기능
 //     @param meetingId 신청할 모임 ID
@@ -57,6 +60,17 @@ public class MeetingMemberService {
         // 승인 또는 거절 처리
         if (approve) {
             member.setStatus(MeetingMember.ParticipationStatus.APPROVED);
+
+            // 중복 승인 방지
+            if (member.getStatus() != MeetingMember.ParticipationStatus.APPROVED) {
+                member.setStatus(MeetingMember.ParticipationStatus.APPROVED);
+
+            // 채널 초대
+            Meeting meeting = member.getMeeting();
+            String channelUrl = meeting.getChannelUrl();
+            String sendbirdUserId = String.valueOf(userId); // Sendbird와 일치시켜야 함
+
+            chatService.inviteUser(channelUrl, List.of(sendbirdUserId));
         } else {
             member.setStatus(MeetingMember.ParticipationStatus.REJECTED);
         }

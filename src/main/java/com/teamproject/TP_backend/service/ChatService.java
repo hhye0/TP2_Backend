@@ -19,23 +19,23 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SendbirdService {
+public class ChatService {
 
     private final RestTemplate restTemplate = new RestTemplate(); // HTTP 요청 전송 객체
     private final Dotenv dotenv = Dotenv.load(); // .env 파일에서 API 키 등 비밀 정보 로드
 
-//     Sendbird API 기본 URL 생성
-//     - App ID에 따라 경로가 달라짐
-//     @return https://api-{app_id}.sendbird.com/v3
+    //     Sendbird API 기본 URL 생성
+    //     - App ID에 따라 경로가 달라짐
+    //     @return https://api-{app_id}.sendbird.com/v3
     private String getBaseUrl() {
         String appId = dotenv.get("SENDBIRD_APP_ID");
         return "https://api-" + appId + ".sendbird.com/v3";
     }
 
-//     그룹 채널 생성 요청
-//     @param channelName 생성할 채널 이름
-//     @param userIds 채널에 포함시킬 사용자 ID 리스트
-//     @return 생성된 채널 정보를 포함한 JSON 문자열
+    //     그룹 채널 생성 요청
+    //     @param channelName 생성할 채널 이름
+    //     @param userIds 채널에 포함시킬 사용자 ID 리스트
+    //     @return 생성된 채널 정보를 포함한 JSON 문자열
     public String createGroupChannel(String channelName, List<String> userIds) {
         String url = getBaseUrl() + "/group_channels";
 
@@ -57,10 +57,10 @@ public class SendbirdService {
         return response.getBody();
     }
 
-//     기존 그룹 채널에 사용자 초대
-//     @param channelUrl 초대할 채널의 URL (Sendbird 채널 식별자)
-//     @param userIds 초대할 사용자 ID 리스트
-//     @return 초대 결과 JSON 문자열
+    //     기존 그룹 채널에 사용자 초대
+    //     @param channelUrl 초대할 채널의 URL (Sendbird 채널 식별자)
+    //     @param userIds 초대할 사용자 ID 리스트
+    //     @return 초대 결과 JSON 문자열
     public String inviteUser(String channelUrl, List<String> userIds) {
         String url = getBaseUrl() + "/group_channels/" + channelUrl + "/invite";
 

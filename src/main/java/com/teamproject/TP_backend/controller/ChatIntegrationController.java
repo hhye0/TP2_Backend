@@ -1,6 +1,6 @@
 package com.teamproject.TP_backend.controller;
 
-import com.teamproject.TP_backend.service.SendbirdService;
+import com.teamproject.TP_backend.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatIntegrationController {
 
-    private final SendbirdService sendbirdService; // Sendbird API 연동 서비스
+    private final ChatService sendbirdService; // Sendbird API 연동 서비스
 
 //     그룹 채널 생성 요청
 //     - 채널 이름과 참여할 사용자 ID 리스트를 전달받아 Sendbird 채널 생성

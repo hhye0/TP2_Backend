@@ -51,6 +51,9 @@ public class Meeting {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true; // 모임 활성 상태 (삭제 여부)
 
+    @Column(name = "channel_url", length = 255)
+    private String channelUrl; // Sendbird 채널 URL
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt; // 생성일 (자동 설정)
@@ -71,7 +74,7 @@ public class Meeting {
     @Builder
     public Meeting(Long id, String title, String description, String bookTitle, String bookAuthor, String bookCover,
                    String bookCategory, LocalDateTime startDate, int maxMembers, boolean isActive,
-                   LocalDateTime createdAt, LocalDateTime updatedAt, User host, List<MeetingMember> participants) {
+                   LocalDateTime createdAt, LocalDateTime updatedAt, User host, String channelUrl, List<MeetingMember> participants) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -85,6 +88,7 @@ public class Meeting {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.host = host;
+        this.channelUrl = channelUrl;
         this.participants = participants != null ? participants : new ArrayList<>();
     }
 
@@ -103,7 +107,7 @@ public class Meeting {
     //     모임 수정용 편의 메서드
     public void update(String title, String bookTitle, String bookAuthor, String bookCover,
                        String bookCategory, LocalDateTime startDate,
-                       int maxMembers, User host) {
+                       int maxMembers, User host, String channelUrl) {
         this.title = title;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -112,5 +116,6 @@ public class Meeting {
         this.startDate = startDate;
         this.maxMembers = maxMembers;
         this.host = host;
+        this.channelUrl = channelUrl;
     }
 }
