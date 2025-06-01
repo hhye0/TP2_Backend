@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RecommendRequestDto {
-    private Long toUserId;
-    private BookDTO book;
+public class BookReviewRequestDto {
+    private String bookTitle;
     private String message;
+    private Long toUserId;
 }
