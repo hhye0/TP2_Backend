@@ -43,6 +43,7 @@ public class UserService {
                 .role(UserRole.USER) // 기본 역할 USER
                 .build();
 
+
         userRepository.save(user);
     }
 
@@ -149,5 +150,9 @@ public class UserService {
                                 .collect(Collectors.toList())
                 )
                 .build();
+    }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 }
