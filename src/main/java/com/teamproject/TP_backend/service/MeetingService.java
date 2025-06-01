@@ -20,28 +20,28 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final UserRepository userRepository; // 사용자 정보 조회용 (호스트 설정 등)
 
-//     전체 모임 리스트 조회
-//     @return 모든 모임의 MeetingDTO 리스트
+    //     전체 모임 리스트 조회
+    //     @return 모든 모임의 MeetingDTO 리스트
     public List<MeetingDTO> getAllMeetings() {
         return meetingRepository.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-//     단일 모임 조회
-//     @param id 조회할 모임 ID
-//     @return 해당 모임의 DTO
-//     @throws RuntimeException 모임이 없을 경우
+    //     단일 모임 조회
+    //     @param id 조회할 모임 ID
+    //     @return 해당 모임의 DTO
+    //     @throws RuntimeException 모임이 없을 경우
     public MeetingDTO getMeeting(Long id) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
         return toDTO(meeting);
     }
 
-//     모임 생성
-//     @param dto 생성할 모임 정보 DTO
-//     @param user 현재 로그인한 사용자 (호스트)
-//     @return 생성된 모임의 DTO
+    //     모임 생성
+    //     @param dto 생성할 모임 정보 DTO
+    //     @param user 현재 로그인한 사용자 (호스트)
+    //     @return 생성된 모임의 DTO
     public MeetingDTO createMeeting(MeetingDTO dto, User user) {
         Meeting meeting = Meeting.builder()
                 .title(dto.getTitle())
@@ -60,12 +60,12 @@ public class MeetingService {
         return toDTO(saved); // Entity → DTO 변환 후 반환
     }
 
-//     모임 수정
-//     @param id 수정 대상 모임 ID
-//     @param dto 수정할 정보가 담긴 DTO
-//     @param user 로그인한 사용자 (호스트 검증용)
-//     @return 수정된 모임의 DTO
-//     @throws RuntimeException 권한 없거나 모임이 없을 경우
+    //     모임 수정
+    //     @param id 수정 대상 모임 ID
+    //     @param dto 수정할 정보가 담긴 DTO
+    //     @param user 로그인한 사용자 (호스트 검증용)
+    //     @return 수정된 모임의 DTO
+    //     @throws RuntimeException 권한 없거나 모임이 없을 경우
     public MeetingDTO updateMeeting(Long id, MeetingDTO dto, User user) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
@@ -92,16 +92,24 @@ public class MeetingService {
         return toDTO(updated);
     }
 
-//     모임 삭제
-//     @param id 삭제할 모임 ID
-//     @param user 현재 로그인한 사용자 (필요 시 권한 체크 가능)
+    //     모임 삭제
+    //     @param id 삭제할 모임 ID
+    //     @param user 현재 로그인한 사용자 (권한 체크)
     public void deleteMeeting(Long id, User user) {
-        meetingRepository.deleteById(id); // 단순 삭제
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
+
+        if (!meeting.getHost().getId().equals(user.getId())) {
+            throw new RuntimeException("모임을 삭제할 권한이 없습니다.");
+        }
+
+        meetingRepository.delete(meeting); // 안전하게 삭제
     }
 
-//     Meeting 엔티티 → MeetingDTO로 변환
-//     @param meeting 변환 대상 엔티티
-//     @return DTO 객체
+
+    //     Meeting 엔티티 → MeetingDTO로 변환
+    //     @param meeting 변환 대상 엔티티
+    //     @return DTO 객체
     private MeetingDTO toDTO(Meeting meeting) {
         return MeetingDTO.builder()
                 .id(meeting.getId())
