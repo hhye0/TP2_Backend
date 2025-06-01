@@ -46,4 +46,15 @@ public class MeetingMemberController {
         meetingMemberService.respondToParticipation(meetingId, userId, approve);
         return ResponseEntity.ok().build();
     }
+
+    // 모임 탈퇴 API
+    // - 사용자가 모임을 나가면 해당 채팅방에서도 자동으로 퇴장됨
+    @DeleteMapping("/{meetingId}/leave")
+    public ResponseEntity<Void> leaveMeeting(
+            @PathVariable Long meetingId,
+            @CurrentUser User user) {
+        meetingMemberService.leaveMeeting(meetingId, user.getId()); // 서비스 호출
+        return ResponseEntity.ok().build(); // 성공 응답 반환
+    }
+
 }

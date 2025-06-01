@@ -51,7 +51,7 @@ public class MeetingMemberService {
     //     @param userId 응답할 사용자 ID
     //     @param approve true면 승인, false면 거절
     //     @throws RuntimeException 신청 정보 없을 때
-        @Transactional
+    @Transactional
     public void respondToParticipation(Long meetingId, Long userId, boolean approve) {
         // 참여 요청 조회
         MeetingMember member = meetingMemberRepository.findByMeetingIdAndUserId(meetingId, userId)
@@ -73,4 +73,21 @@ public class MeetingMemberService {
             member.setStatus(MeetingMember.ParticipationStatus.REJECTED);
         }
     }
+
+    // 사용자가 모임을 탈퇴하는 기능
+    // DB에서 참여 정보를 삭제하고, 채팅에서도 퇴장시킴
+    @Transactional
+    public void leaveMeeting(Long meetingId, Long userId) {
+        // 해당 모임과 사용자 조합으로 참여 정보 조회
+        MeetingMember member = meetingMemberRepository.findByMeetingIdAndUserId(meetingId, userId)
+                .orElseThrow(() -> new RuntimeException("참여 기록이 없습니다."));
+
+        // DB에서 참여 정보 삭제
+        meetingMemberRepository.delete(member);
+
+        // 채팅에서 퇴장 처리
+        String channelUrl = member.getMeeting().getChannelUrl(); // 모임의 채팅 채널 URL
+        chatService.leaveChannel(channelUrl, String.valueOf(userId)); // Sendbird API 호출
+    }
+
 }
