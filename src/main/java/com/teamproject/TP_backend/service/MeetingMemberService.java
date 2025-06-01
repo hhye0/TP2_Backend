@@ -22,7 +22,7 @@ public class MeetingMemberService {
     private final MeetingMemberRepository meetingMemberRepository;
     private final ChatService chatService;
 
-//     사용자가 특정 모임에 참여 신청하는 기능
+    //     사용자가 특정 모임에 참여 신청하는 기능
 //     @param meetingId 신청할 모임 ID
 //     @param userId 신청하는 사용자 ID
 //     @throws RuntimeException 모임이나 사용자 없을 때, 이미 신청했을 때
@@ -46,31 +46,29 @@ public class MeetingMemberService {
         meetingMemberRepository.save(member);
     }
 
-//     호스트가 참여 요청에 대해 수락/거절 응답 처리
-//     @param meetingId 모임 ID
-//     @param userId 응답할 사용자 ID
-//     @param approve true면 승인, false면 거절
-//     @throws RuntimeException 신청 정보 없을 때
-    @Transactional
+    //     호스트가 참여 요청에 대해 수락/거절 응답 처리
+    //     @param meetingId 모임 ID
+    //     @param userId 응답할 사용자 ID
+    //     @param approve true면 승인, false면 거절
+    //     @throws RuntimeException 신청 정보 없을 때
+        @Transactional
     public void respondToParticipation(Long meetingId, Long userId, boolean approve) {
         // 참여 요청 조회
         MeetingMember member = meetingMemberRepository.findByMeetingIdAndUserId(meetingId, userId)
                 .orElseThrow(() -> new RuntimeException("신청 정보를 찾을 수 없습니다."));
 
-        // 승인 또는 거절 처리
         if (approve) {
-            member.setStatus(MeetingMember.ParticipationStatus.APPROVED);
-
             // 중복 승인 방지
             if (member.getStatus() != MeetingMember.ParticipationStatus.APPROVED) {
                 member.setStatus(MeetingMember.ParticipationStatus.APPROVED);
 
-            // 채널 초대
-            Meeting meeting = member.getMeeting();
-            String channelUrl = meeting.getChannelUrl();
-            String sendbirdUserId = String.valueOf(userId); // Sendbird와 일치시켜야 함
+                // 채널 초대
+                Meeting meeting = member.getMeeting();
+                String channelUrl = meeting.getChannelUrl();
+                String sendbirdUserId = String.valueOf(userId); // Sendbird ID는 userId 기준
 
-            chatService.inviteUser(channelUrl, List.of(sendbirdUserId));
+                chatService.inviteUser(channelUrl, List.of(sendbirdUserId));
+            }
         } else {
             member.setStatus(MeetingMember.ParticipationStatus.REJECTED);
         }
