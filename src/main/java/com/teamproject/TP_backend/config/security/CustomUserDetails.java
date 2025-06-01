@@ -2,7 +2,9 @@ package com.teamproject.TP_backend.config.security;
 
 import com.teamproject.TP_backend.domain.entity.User;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -52,4 +54,11 @@ public class CustomUserDetails implements UserDetails {
     public User getUser() {
         return user;
     }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUser(); // User 객체 그대로 반환
+    }
+
 }

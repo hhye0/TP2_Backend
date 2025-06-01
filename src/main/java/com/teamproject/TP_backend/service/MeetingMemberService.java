@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+// 모임 참여(신청 및 승인/거절) 관련 비즈니스 로직을 처리하는 서비스 클래스
 @Service
 @RequiredArgsConstructor
 public class MeetingMemberService {
@@ -18,27 +19,42 @@ public class MeetingMemberService {
     private final UserRepository userRepository;
     private final MeetingMemberRepository meetingMemberRepository;
 
+//     사용자가 특정 모임에 참여 신청하는 기능
+//     @param meetingId 신청할 모임 ID
+//     @param userId 신청하는 사용자 ID
+//     @throws RuntimeException 모임이나 사용자 없을 때, 이미 신청했을 때
     public void joinMeeting(Long meetingId, Long userId) {
+        // 모임 조회
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("모임이 존재하지 않습니다."));
 
+        // 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다."));
 
+        // 중복 신청 방지
         boolean alreadyJoined = meetingMemberRepository.existsByMeetingAndUser(meeting, user);
         if (alreadyJoined) {
             throw new RuntimeException("이미 참여한 모임입니다.");
         }
 
+        // 모임 참여 정보 생성 및 저장
         MeetingMember member = MeetingMember.create(meeting, user);
         meetingMemberRepository.save(member);
     }
 
+//     호스트가 참여 요청에 대해 수락/거절 응답 처리
+//     @param meetingId 모임 ID
+//     @param userId 응답할 사용자 ID
+//     @param approve true면 승인, false면 거절
+//     @throws RuntimeException 신청 정보 없을 때
     @Transactional
     public void respondToParticipation(Long meetingId, Long userId, boolean approve) {
+        // 참여 요청 조회
         MeetingMember member = meetingMemberRepository.findByMeetingIdAndUserId(meetingId, userId)
                 .orElseThrow(() -> new RuntimeException("신청 정보를 찾을 수 없습니다."));
 
+        // 승인 또는 거절 처리
         if (approve) {
             member.setStatus(MeetingMember.ParticipationStatus.APPROVED);
         } else {

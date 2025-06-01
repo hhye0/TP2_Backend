@@ -30,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -49,20 +48,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String role = claims.get("role", String.class);
                     List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
-                    // ✅ 진짜 DB에서 유저 꺼내기
+                    // 진짜 DB에서 유저 꺼내기
                     com.teamproject.TP_backend.domain.entity.User user = userRepository.findByEmail(email)
                             .orElseThrow(() -> new RuntimeException("유저 없음: " + email));
 
-                    // ✅ CustomUserDetails 생성
+                    // CustomUserDetails 생성
                     CustomUserDetails userDetails = new CustomUserDetails(user);
 
-                    // ✅ 인증 객체 만들기
+                    // 인증 객체 만들기
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    // ✅ 여기만 유지!!!
+                    // 여기만 유지!!!
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (Exception e) {

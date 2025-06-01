@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/meetings/**").hasAnyRole("USER", "ADMIN") // ✅ 이거 꼭 있어야 해요
+                        .requestMatchers("/api/meetings/**").hasAnyRole("USER", "ADMIN") // 이거 꼭 있어야 해요
                         .anyRequest().authenticated()
                 )
 
@@ -68,7 +68,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
-
 }
