@@ -2,6 +2,7 @@ package com.teamproject.TP_backend.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.teamproject.TP_backend.domain.enums.ParticipationStatus;
 
 import java.time.LocalDate;
 
@@ -42,7 +43,6 @@ public class MeetingMember {
 
     //     정적 팩토리 메서드로 기본 참여 정보 생성
 //     - 상태는 기본값으로 PENDING
-    @Builder
     public static MeetingMember create(Meeting meeting, User user) {
         return MeetingMember.builder()
                 .meeting(meeting)
@@ -52,11 +52,5 @@ public class MeetingMember {
                 .build();
     }
 
-    //     모임 참여 상태 Enum
-    public enum ParticipationStatus {
-        PENDING,   // 신청 상태
-        APPROVED,  // 수락됨
-        REJECTED   // 거절됨
-    }
 
 }

@@ -92,6 +92,7 @@ public class Meeting {
         this.participants = participants != null ? participants : new ArrayList<>();
     }
 
+    // 여기 부분 확인 ( 안 쓰이면 삭제 )
     //     참여자 추가 편의 메서드
     public void addParticipant(MeetingMember participant) {
         participants.add(participant);

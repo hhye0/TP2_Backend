@@ -20,4 +20,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //     @param email 사용자 이메일
 //     @return true면 이미 존재
     boolean existsByEmail(String email);
+
+//     해당 닉네임이 이미 존재하는지 여부 확인
+//     - 회원가입 시 중복 닉네임 검사용
+//     @param nickname 사용자 닉네임
+//     @return true면 이미 존재
+    boolean existsByNickname(String nickname);
 }

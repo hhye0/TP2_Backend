@@ -32,6 +32,10 @@ public class User {
     @NotBlank(message = "Name은 필수 입력항목입니다.")
     private String name; // 사용자 이름
 
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "닉네임을 입력하세요.")
+    private String nickname;
+
     @Column(nullable = false, unique = true, length = 100)
     @NotBlank(message = "Email은 필수 입력항목입니다.")
     @Email

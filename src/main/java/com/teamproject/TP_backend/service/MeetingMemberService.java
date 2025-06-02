@@ -3,6 +3,7 @@ package com.teamproject.TP_backend.service;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.MeetingMember;
 import com.teamproject.TP_backend.domain.entity.User;
+import com.teamproject.TP_backend.domain.enums.ParticipationStatus;
 import com.teamproject.TP_backend.repository.MeetingMemberRepository;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
@@ -58,9 +59,11 @@ public class MeetingMemberService {
                 .orElseThrow(() -> new RuntimeException("신청 정보를 찾을 수 없습니다."));
 
         if (approve) {
+            member.setStatus(ParticipationStatus.APPROVED);
+
             // 중복 승인 방지
-            if (member.getStatus() != MeetingMember.ParticipationStatus.APPROVED) {
-                member.setStatus(MeetingMember.ParticipationStatus.APPROVED);
+            if (member.getStatus() != ParticipationStatus.APPROVED) {
+                member.setStatus(ParticipationStatus.APPROVED);
 
                 // 채널 초대
                 Meeting meeting = member.getMeeting();
@@ -70,7 +73,7 @@ public class MeetingMemberService {
                 chatService.inviteUser(channelUrl, List.of(sendbirdUserId));
             }
         } else {
-            member.setStatus(MeetingMember.ParticipationStatus.REJECTED);
+            member.setStatus(ParticipationStatus.REJECTED);
         }
     }
 

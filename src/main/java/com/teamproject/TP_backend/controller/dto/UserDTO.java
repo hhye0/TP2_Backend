@@ -12,6 +12,7 @@ public class UserDTO {
 
     private Long id;      // 사용자 ID
     private String name;  // 사용자 이름
+    private String nickname; // 사용자 닉네임
     private String email; // 사용자 이메일
 
 //     User 엔티티를 UserDTO로 변환하는 정적 메서드
@@ -21,6 +22,7 @@ public class UserDTO {
         return UserDTO.builder()
                 .id(user.getId())
                 .name(user.getName())
+                .nickname(user.getNickname())
                 .email(user.getEmail())
                 .build();
     }

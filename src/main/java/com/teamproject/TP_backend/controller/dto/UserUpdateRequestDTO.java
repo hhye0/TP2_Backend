@@ -17,6 +17,7 @@ public class UserUpdateRequestDTO {
     @Email(message = "유효한 이메일 주소를 입력하세요.")
     private String email; // 변경할 이메일 주소
     @Size(min = 6, message = "비밀번호는 최소 6자 이상이어야 합니다.")
+    private String nickname; // 변경할 닉네임
     private String password; // 변경할 비밀번호 (선택사항)
 
 }

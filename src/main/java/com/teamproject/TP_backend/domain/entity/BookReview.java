@@ -21,26 +21,25 @@ public class BookReview {
     // 리뷰 고유 ID (기본 키)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // 리뷰의 고유 식별자 (PK)
 
-    // 리뷰 대상 책 제목
-    private String bookTitle;
+    private String bookTitle; // 책 제목
 
-    // 책 저자
-    private String bookAuthor;
+    private String bookAuthor; // 책 저자
 
-    // 책 표지 이미지 URL
-    private String bookCoverUrl;
+    private String bookCoverUrl; // 표지 URL
 
-    // 사용자가 입력한 리뷰 메시지
-    private String message;
+    private String message; // 리뷰 메시지
 
-    // 리뷰 작성 시각 (로컬 서버 기준 시간)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // 리뷰가 작성된 시점
 
     // 리뷰 작성자 (User 엔티티와 다대일 관계)
     // - 하나의 유저가 여러 개의 리뷰를 작성할 수 있음
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_user_id") // 외래 키 컬럼 이름 지정
+    @JoinColumn(name = "reviewer")
     private User reviewer;
+
+    public void updateMessage(String newMessage) {
+        this.message = newMessage;
+    }
 }
