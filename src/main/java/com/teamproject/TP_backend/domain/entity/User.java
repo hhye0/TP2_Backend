@@ -56,13 +56,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MeetingMember> meetingMemberships = new ArrayList<>();
 
-    // 향후 확장용 필드 (커뮤니티, 댓글, 리뷰 등)
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Community> posts = new ArrayList<>();
-    //
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Comment> comments = new ArrayList<>();
-    //
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Review> reviews = new ArrayList<>();
+    // 사용자가 작성한 책 리뷰 목록
+    //     - OneToMany(주인 X) / mappedBy="user"
+     @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL, orphanRemoval = true)
+     private List<BookReview> bookReviews = new ArrayList<>();
 }
