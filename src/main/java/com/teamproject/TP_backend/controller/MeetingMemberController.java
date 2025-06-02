@@ -8,9 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 // 모임 참여 신청 및 승인/거절 처리를 담당하는 컨트롤러
 // 경로: /api/meetings
-
 @RestController
 @RequestMapping("/api/meetings")
 @RequiredArgsConstructor
@@ -22,14 +23,19 @@ public class MeetingMemberController {
     //     - 로그인한 사용자가 특정 모임에 참여를 요청
     //     @param meetingId 신청할 모임 ID
     //     @param userDetails 현재 로그인한 사용자 정보
-    //     @return 성공 메시지
     @PostMapping("/{meetingId}/join")
-    public ResponseEntity<String> joinMeeting(
+    public ResponseEntity<Map<String, String>> joinMeeting(
             @PathVariable Long meetingId,
             @CurrentUser User user) {
-        meetingMemberService.joinMeeting(meetingId, user.getId()); // 참여 신청 처리
-        return ResponseEntity.ok("참여 신청이 완료되었습니다.");
+        try {
+            meetingMemberService.joinMeeting(meetingId, user.getId());
+            return ResponseEntity.ok(Map.of("message", "참여 신청이 완료되었습니다."));
+        } catch (RuntimeException e) {
+            Map<String, String> errorBody = Map.of("error", e.getMessage());
+            return ResponseEntity.<Map<String, String>>badRequest().body(errorBody);
+        }
     }
+
 
     //     모임 참여 수락/거절 응답 API
     //     - 호스트가 특정 유저의 참여 요청에 대해 승인 또는 거절
