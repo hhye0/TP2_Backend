@@ -1,0 +1,30 @@
+package com.teamproject.TP_backend.controller;
+
+import com.teamproject.TP_backend.controller.dto.DiscussionScheduleDTO;
+import com.teamproject.TP_backend.service.DiscussionScheduleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/meetings")
+public class DiscussionScheduleController {
+
+    private final DiscussionScheduleService discussionScheduleService;
+
+    @GetMapping("/{meetingId}/schedules")
+    public ResponseEntity<List<DiscussionScheduleDTO>> getSchedules(@PathVariable Long meetingId) {
+        return ResponseEntity.ok(discussionScheduleService.getSchedulesByMeeting(meetingId));
+    }
+
+    @PostMapping("/{meetingId}/schedules")
+    public ResponseEntity<DiscussionScheduleDTO> createSchedule(
+            @PathVariable Long meetingId,
+            @RequestBody DiscussionScheduleDTO dto
+    ) {
+        return ResponseEntity.ok(discussionScheduleService.createSchedule(meetingId, dto));
+    }
+}
