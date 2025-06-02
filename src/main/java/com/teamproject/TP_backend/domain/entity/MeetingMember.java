@@ -42,7 +42,7 @@ public class MeetingMember {
     private ParticipationStatus status; // 참여 상태 (대기/승인/거절)
 
     //     정적 팩토리 메서드로 기본 참여 정보 생성
-//     - 상태는 기본값으로 PENDING
+    //     - 상태는 기본값으로 PENDING
     public static MeetingMember create(Meeting meeting, User user) {
         return MeetingMember.builder()
                 .meeting(meeting)
@@ -50,6 +50,10 @@ public class MeetingMember {
                 .joinedAt(LocalDate.now())
                 .status(ParticipationStatus.PENDING)
                 .build();
+    }
+
+    public boolean isAccepted() {
+        return this.status == ParticipationStatus.APPROVED;
     }
 
 

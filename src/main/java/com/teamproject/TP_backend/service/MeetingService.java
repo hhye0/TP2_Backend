@@ -1,10 +1,12 @@
 package com.teamproject.TP_backend.service;
 
 import com.teamproject.TP_backend.controller.dto.MeetingDTO;
+import com.teamproject.TP_backend.controller.dto.ParticipantDTO;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
+import com.teamproject.TP_backend.controller.dto.ParticipantDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class MeetingService {
 
     private final MeetingRepository meetingRepository;
     private final UserRepository userRepository; // 사용자 정보 조회용 (호스트 설정 등)
+    private final ChatService chatService;
 
     //     전체 모임 리스트 조회
     //     @return 모든 모임의 MeetingDTO 리스트
@@ -43,22 +46,33 @@ public class MeetingService {
     //     @param user 현재 로그인한 사용자 (호스트)
     //     @return 생성된 모임의 DTO
     public MeetingDTO createMeeting(MeetingDTO dto, User user) {
+        // 1. 모임 엔티티 생성 (채널 URL 없이 먼저 저장)
         Meeting meeting = Meeting.builder()
                 .title(dto.getTitle())
-                .host(user) // 현재 로그인한 유저를 호스트로 설정
+                .host(user)
                 .bookTitle(dto.getBookTitle())
                 .bookAuthor(dto.getBookAuthor())
                 .bookCover(dto.getBookCover())
                 .bookCategory(dto.getBookCategory())
                 .startDate(dto.getStartDate())
                 .maxMembers(dto.getMaxMembers())
-                .description(dto.getDescription())         // 모임 소개글 추가
-                .isActive(true)                            // 생성 시 활성화 상태
+                .description(dto.getDescription())
+                .isActive(true)
                 .build();
 
-        Meeting saved = meetingRepository.save(meeting);
-        return toDTO(saved); // Entity → DTO 변환 후 반환
+        Meeting saved = meetingRepository.save(meeting); // 먼저 저장해서 ID 확보
+
+        // 2. Sendbird 채널 생성 (채널 이름 = "meeting-{id}")
+        String channelName = "meeting-" + saved.getId();
+        String channelUrl = chatService.createGroupChannel(channelName, List.of(String.valueOf(user.getId())));
+
+        // 3. 채널 URL 저장 후 다시 저장
+        saved.setChannelUrl(channelUrl);
+        meetingRepository.save(saved); // 다시 저장해서 URL 반영
+
+        return toDTO(saved); // DTO 변환 후 반환
     }
+
 
     //     모임 수정
     //     @param id 수정 대상 모임 ID
@@ -101,7 +115,6 @@ public class MeetingService {
         meetingRepository.save(meeting);
     }
 
-
     //     모임 삭제
     //     @param id 삭제할 모임 ID
     //     @param user 현재 로그인한 사용자 (권한 체크)
@@ -133,6 +146,21 @@ public class MeetingService {
                 .hostEmail(meeting.getHost().getEmail())         // 호스트 이메일
                 .description(meeting.getDescription())           // 모임 소개글
                 .channelUrl(meeting.getChannelUrl())             // Sendbird 채널 URL (프론트에서 채팅 입장에 필요)
+
+                // 참여자 목록 추가 (isAccepted == true인 멤버만)
+                .participants(
+                        meeting.getParticipants().stream()
+                                .filter(participant -> participant.isAccepted())
+                                .map(participant -> {
+                                    User user = participant.getUser();
+                                    return ParticipantDTO.builder()
+                                            .userId(user.getId())
+                                            .nickname(user.getNickname())
+                                            .status(participant.getStatus()) // ParticipationStatus 사용
+                                            .build();
+                                })
+                                .collect(Collectors.toList())
+                )
                 .build();
     }
 }

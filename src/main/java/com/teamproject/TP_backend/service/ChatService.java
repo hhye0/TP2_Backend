@@ -1,6 +1,9 @@
 package com.teamproject.TP_backend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -41,20 +44,27 @@ public class ChatService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Api-Token", dotenv.get("SENDBIRD_API_TOKEN")); // 인증용 토큰
+        headers.set("Api-Token", dotenv.get("SENDBIRD_API_TOKEN"));
 
-        // 요청 본문 데이터 구성
         Map<String, Object> body = Map.of(
                 "name", channelName,
                 "user_ids", userIds,
-                "is_distinct", false // 같은 유저로 만든 채널 중복 생성 허용, 유저가 만든 모임이 여러개일 경우 대비
+                "is_distinct", false
         );
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-
-        // POST 요청 보내고 응답 받기
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-        return response.getBody();
+
+        try {
+            // JSON 파싱해서 channel_url 추출
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.getBody());
+            return root.get("channel_url").asText(); // channel_url만 반환
+
+        } catch (Exception e) {
+            e.printStackTrace(); // 에러 로그 찍고
+            return null;         // 실패 시 null 반환 (또는 throw new RuntimeException...)
+        }
     }
 
     //     기존 그룹 채널에 사용자 초대
@@ -105,4 +115,5 @@ public class ChatService {
         HttpEntity<Void> request = new HttpEntity<>(headers);
         restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
     }
+
 }

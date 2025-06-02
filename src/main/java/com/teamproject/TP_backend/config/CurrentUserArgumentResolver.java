@@ -1,5 +1,6 @@
 package com.teamproject.TP_backend.config;
 
+import com.teamproject.TP_backend.config.security.CustomUserDetails;
 import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,14 +26,22 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, org.springframework.web.bind.support.WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
 
-        String email = authentication.getName(); // 보통 username이 email임
-        return userRepository.findByEmail(email).orElse(null);
+        Object principal = authentication.getPrincipal();
+
+        // CustomUserDetails → User 엔티티 꺼내기
+        if (principal instanceof CustomUserDetails userDetails) {
+            return userDetails.getUser();  // User 엔티티 직접 반환
+        }
+
+        return null;
     }
+
 }

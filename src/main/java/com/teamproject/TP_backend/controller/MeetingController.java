@@ -69,7 +69,6 @@ public class MeetingController {
         return ResponseEntity.ok(active ? "모집중으로 변경됨" : "마감 처리됨");
     }
 
-
     //     모임 삭제 API
     //     @param id 삭제할 모임 ID
     //     @param user 현재 로그인한 사용자 (호스트 권한 확인용)

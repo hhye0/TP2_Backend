@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // 로그인, 회원가입 관련 요청은 허용
                         .requestMatchers("/api/books/search").permitAll() // 책 검색은 누구나 가능
+                        .requestMatchers("/api/meetings").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // 관리자만 접근 가능
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // 일반 사용자 또는 관리자 접근 가능
                         .requestMatchers("/api/meetings/**").hasAnyRole("USER", "ADMIN") // 독서모임 관련 요청도 로그인 필수
