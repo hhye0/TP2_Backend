@@ -20,6 +20,11 @@ public class DiscussionScheduleController {
         return ResponseEntity.ok(discussionScheduleService.getSchedulesByMeeting(meetingId));
     }
 
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<DiscussionScheduleDTO> getDiscussion(@PathVariable Long id) {
+        return ResponseEntity.ok(discussionScheduleService.getById(id));
+    }
+
     @PostMapping("/{meetingId}/schedules")
     public ResponseEntity<DiscussionScheduleDTO> createSchedule(
             @PathVariable Long meetingId,

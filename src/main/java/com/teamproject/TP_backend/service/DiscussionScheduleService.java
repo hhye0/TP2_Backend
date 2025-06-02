@@ -24,15 +24,22 @@ public class DiscussionScheduleService {
                 .collect(Collectors.toList());
     }
 
+    public DiscussionScheduleDTO getById(Long id) {
+        DiscussionSchedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
+        return DiscussionScheduleDTO.fromEntity(schedule);
+    }
+
     public DiscussionScheduleDTO createSchedule(Long meetingId, DiscussionScheduleDTO dto) {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
 
         DiscussionSchedule schedule = DiscussionSchedule.builder()
                 .meeting(meeting)
-                .title(dto.getTitle())
-                .dateTime(dto.getDateTime())
-                .content(dto.getContent())
+                .topic(dto.topic())
+                .date(dto.date())
+                .time(dto.time()) // ✅ 추가
+                .memo(dto.memo())
                 .build();
 
         return toDTO(scheduleRepository.save(schedule));
@@ -42,9 +49,10 @@ public class DiscussionScheduleService {
         DiscussionSchedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("토론 일정을 찾을 수 없습니다."));
 
-        schedule.setTitle(dto.getTitle());
-        schedule.setDateTime(dto.getDateTime());
-        schedule.setContent(dto.getContent());
+        schedule.setTopic(dto.topic());
+        schedule.setDate(dto.date());
+        schedule.setTime(dto.time()); // 추가
+        schedule.setMemo(dto.memo());
 
         return toDTO(scheduleRepository.save(schedule));
     }
@@ -56,13 +64,14 @@ public class DiscussionScheduleService {
         scheduleRepository.delete(schedule);
     }
 
-
     private DiscussionScheduleDTO toDTO(DiscussionSchedule s) {
-        return DiscussionScheduleDTO.builder()
-                .id(s.getId())
-                .title(s.getTitle())
-                .dateTime(s.getDateTime())
-                .content(s.getContent())
-                .build();
+        return new DiscussionScheduleDTO(
+                s.getId(),
+                s.getTopic(),
+                s.getDate(),
+                s.getTime(),
+                s.getMemo(),
+                s.getMeeting().getId()
+        );
     }
 }

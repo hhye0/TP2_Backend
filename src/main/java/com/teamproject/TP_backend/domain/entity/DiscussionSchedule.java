@@ -1,8 +1,11 @@
 package com.teamproject.TP_backend.domain.entity;
 
+import com.teamproject.TP_backend.domain.entity.Meeting;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -16,13 +19,15 @@ public class DiscussionSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String topic;
 
-    private LocalDateTime dateTime;
+    private LocalDate date;
 
-    private String content;
+    private LocalTime time;
+
+    private String memo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id")
+    @JoinColumn(name = "meeting_id", nullable = false)
     private Meeting meeting;
 }
