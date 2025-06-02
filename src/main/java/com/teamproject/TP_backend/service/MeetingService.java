@@ -91,6 +91,17 @@ public class MeetingService {
         return toDTO(updated);
     }
 
+    public void updateMeetingStatus(Long id, boolean active, User user) {
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
+        if (!meeting.getHost().getId().equals(user.getId())) {
+            throw new RuntimeException("모임 상태를 변경할 권한이 없습니다.");
+        }
+        meeting.setActive(active);
+        meetingRepository.save(meeting);
+    }
+
+
     //     모임 삭제
     //     @param id 삭제할 모임 ID
     //     @param user 현재 로그인한 사용자 (권한 체크)
