@@ -27,4 +27,19 @@ public class DiscussionScheduleController {
     ) {
         return ResponseEntity.ok(discussionScheduleService.createSchedule(meetingId, dto));
     }
+
+    @PutMapping("/schedules/{scheduleId}")
+    public ResponseEntity<DiscussionScheduleDTO> updateSchedule(
+            @PathVariable Long scheduleId,
+            @RequestBody DiscussionScheduleDTO dto
+    ) {
+        return ResponseEntity.ok(discussionScheduleService.updateSchedule(scheduleId, dto));
+    }
+
+    @DeleteMapping("/schedules/{scheduleId}")
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long scheduleId) {
+        discussionScheduleService.deleteSchedule(scheduleId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

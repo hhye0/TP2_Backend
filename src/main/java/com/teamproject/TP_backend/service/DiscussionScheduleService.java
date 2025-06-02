@@ -38,6 +38,25 @@ public class DiscussionScheduleService {
         return toDTO(scheduleRepository.save(schedule));
     }
 
+    public DiscussionScheduleDTO updateSchedule(Long scheduleId, DiscussionScheduleDTO dto) {
+        DiscussionSchedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("토론 일정을 찾을 수 없습니다."));
+
+        schedule.setTitle(dto.getTitle());
+        schedule.setDateTime(dto.getDateTime());
+        schedule.setContent(dto.getContent());
+
+        return toDTO(scheduleRepository.save(schedule));
+    }
+
+    public void deleteSchedule(Long scheduleId) {
+        DiscussionSchedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("토론 일정을 찾을 수 없습니다."));
+
+        scheduleRepository.delete(schedule);
+    }
+
+
     private DiscussionScheduleDTO toDTO(DiscussionSchedule s) {
         return DiscussionScheduleDTO.builder()
                 .id(s.getId())
