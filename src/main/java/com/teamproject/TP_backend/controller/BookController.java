@@ -8,9 +8,15 @@ import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.service.BookReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +24,14 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookReviewService bookReviewService;
+
+    // 전체 조회
+    @GetMapping("/review")
+    public ResponseEntity<List<BookReviewResponseDTO>> getAllReviews(
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        List<BookReviewResponseDTO> reviews = bookReviewService.getAllReviews(pageable).getContent();
+        return ResponseEntity.ok(reviews);
+    }
 
     // 리뷰 생성
     @PostMapping("/review")

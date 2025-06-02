@@ -10,6 +10,8 @@ import com.teamproject.TP_backend.exception.UnauthorizedAccessException;
 import com.teamproject.TP_backend.repository.BookReviewRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +24,12 @@ public class BookReviewService {
 
     private final BookSearchService bookSearchService;
     private final BookReviewRepository bookReviewRepository;
-    private final UserRepository userRepository;
 
-
+    @Transactional(readOnly = true)
+    public Page<BookReviewResponseDTO> getAllReviews(Pageable pageable) {
+        Page<BookReview> reviews = bookReviewRepository.findAll(pageable);
+        return reviews.map(this::convertToDTO);
+    }
     @Transactional
     public BookReviewResponseDTO addReview(String bookTitle, String message, User reviewer) {
         // 책 검색
