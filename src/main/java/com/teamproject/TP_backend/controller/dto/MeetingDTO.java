@@ -41,5 +41,7 @@ public class MeetingDTO {
 
     private Long hostId; // 모임을 생성한 호스트의 사용자 ID
 
+    private String hostNickname; // 모임 호스트의 닉네임 (프론트 노출용)
+
     private String hostEmail; // 모임 호스트의 이메일 (프론트 노출용)
 }

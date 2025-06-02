@@ -3,6 +3,7 @@ package com.teamproject.TP_backend.service;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.MeetingMember;
 import com.teamproject.TP_backend.domain.entity.User;
+import com.teamproject.TP_backend.domain.enums.ParticipationStatus;
 import com.teamproject.TP_backend.repository.MeetingMemberRepository;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
@@ -56,9 +57,9 @@ public class MeetingMemberService {
 
         // 승인 또는 거절 처리
         if (approve) {
-            member.setStatus(MeetingMember.ParticipationStatus.APPROVED);
+            member.setStatus(ParticipationStatus.APPROVED);
         } else {
-            member.setStatus(MeetingMember.ParticipationStatus.REJECTED);
+            member.setStatus(ParticipationStatus.REJECTED);
         }
     }
 }

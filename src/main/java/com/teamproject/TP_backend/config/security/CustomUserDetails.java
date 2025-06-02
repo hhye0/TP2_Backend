@@ -55,10 +55,5 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getUser(); // User 객체 그대로 반환
-    }
 
 }

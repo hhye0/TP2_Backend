@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 public record SignupRequestDTO(
         @NotBlank(message = "이름은 필수입니다.")
         String name,         // 사용자 이름
+        @NotBlank(message = "닉네임을 입력하세요.")
+        String nickName,
         @Email(message = "유효한 이메일 주소를 입력하세요.")
         @NotBlank
         String email,        // 사용자 이메일 (아이디로 사용됨)

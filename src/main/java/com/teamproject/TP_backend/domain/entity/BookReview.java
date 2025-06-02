@@ -17,19 +17,23 @@ public class BookReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // 리뷰의 고유 식별자 (PK)
 
-    private String bookTitle;
+    private String bookTitle; // 책 제목
 
-    private String bookAuthor;
+    private String bookAuthor; // 책 저자
 
-    private String bookCoverUrl;
+    private String bookCoverUrl; // 표지 URL
 
-    private String message;
+    private String message; // 리뷰 메시지
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // 리뷰가 작성된 시점
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_user_id")
+    @JoinColumn(name = "reviewer")
     private User reviewer;
+
+    public void updateMessage(String newMessage) {
+        this.message = newMessage;
+    }
 }

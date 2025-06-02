@@ -5,7 +5,7 @@ import com.teamproject.TP_backend.controller.dto.*;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.MeetingMember;
 import com.teamproject.TP_backend.domain.entity.User;
-import com.teamproject.TP_backend.domain.enums.ParticipantStatus;
+import com.teamproject.TP_backend.domain.enums.ParticipationStatus;
 import com.teamproject.TP_backend.domain.enums.UserRole;
 import com.teamproject.TP_backend.exception.UserAlreadyExistsException;
 import com.teamproject.TP_backend.repository.UserRepository;
@@ -35,9 +35,13 @@ public class UserService {
         if (userRepository.existsByEmail(dto.email())) {
             throw new UserAlreadyExistsException("이미 존재하는 이메일입니다.");
         }
+        if (userRepository.existsByNickname(dto.nickName())){
+            throw new UserAlreadyExistsException("이미 사용 중인 닉네임입니다.");
+        }
 
         User user = User.builder()
                 .name(dto.name())
+                .nickname(dto.nickName())
                 .email(dto.email())
                 .password(passwordEncoder.encode(dto.password())) // 비밀번호 해싱
                 .role(UserRole.USER) // 기본 역할 USER
@@ -64,7 +68,7 @@ public class UserService {
     }
 
     //     사용자 정보 수정
-    //     - 이름, 이메일, 비밀번호 중 전달된 값만 변경
+    //     - 이름, 이메일, 닉네임, 비밀번호 중 전달된 값만 변경
     //     @param id 수정 대상 사용자 ID
     //     @param dto 수정할 정보가 담긴 DTO
     //     @return true: 성공 / false: 유저 없음
@@ -79,6 +83,9 @@ public class UserService {
         // 필드 별 null 검사 후 값 변경
         if (dto.getName() != null && !dto.getName().isEmpty()) {
             user.setName(dto.getName());
+        }
+        if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
+            user.setNickname(dto.getNickname());
         }
         if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
             user.setEmail(dto.getEmail());
@@ -106,7 +113,7 @@ public class UserService {
     // 사용자가 참여한 모임 목록 조회
     public List<MeetingDTO> getJoinedMeetings(User user) {
         return user.getMeetingMemberships().stream()
-                .filter(member -> member.getStatus() == MeetingMember.ParticipationStatus.APPROVED)
+                .filter(member -> member.getStatus() == ParticipationStatus.APPROVED)
                 .map(member -> member.getMeeting())
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -138,14 +145,8 @@ public class UserService {
                         meeting.getParticipants().stream()
                                 .map(participant -> ParticipantDTO.builder()
                                         .userId(participant.getUser().getId())
-                                        .userName(participant.getUser().getName())
-                                        .status(
-                                                switch (participant.getStatus()) {
-                                                    case APPROVED -> ParticipantStatus.APPROVED;
-                                                    case PENDING -> ParticipantStatus.WAITING;
-                                                    case REJECTED -> ParticipantStatus.REJECTED;
-                                                }
-                                        )
+                                        .nickname(participant.getUser().getNickname())
+                                        .status(participant.getStatus())
                                         .build())
                                 .collect(Collectors.toList())
                 )
