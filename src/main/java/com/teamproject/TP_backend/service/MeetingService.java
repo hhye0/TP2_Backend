@@ -75,9 +75,6 @@ public class MeetingService {
             throw new RuntimeException("권한이 없습니다.");
         }
 
-        meeting.setActive(false); // 이전 모임 비활성화 처리 (소프트 삭제)
-        meetingRepository.save(meeting);
-
         // 필드 값 업데이트
         meeting.setTitle(dto.getTitle());
         meeting.setBookTitle(dto.getBookTitle());
@@ -87,6 +84,8 @@ public class MeetingService {
         meeting.setStartDate(dto.getStartDate());
         meeting.setMaxMembers(dto.getMaxMembers());
         meeting.setDescription(dto.getDescription());     // 모임 소개글 업데이트
+
+        meeting.setActive(dto.isActive()); // 모집상태(모집중/마감)도 업데이트 가능!
 
         Meeting updated = meetingRepository.save(meeting);
         return toDTO(updated);
