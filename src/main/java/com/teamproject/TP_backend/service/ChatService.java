@@ -55,6 +55,9 @@ public class ChatService {
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
 
+        // ✅ 바로 여기에 로그 추가!
+        log.info("Sendbird 응답: {}", response.getBody());
+
         try {
             // JSON 파싱해서 channel_url 추출
             ObjectMapper mapper = new ObjectMapper();
@@ -63,6 +66,7 @@ public class ChatService {
 
         } catch (Exception e) {
             e.printStackTrace(); // 에러 로그 찍고
+            log.error("Sendbird 채널 생성 실패", e); // 예외 로그
             return null;         // 실패 시 null 반환 (또는 throw new RuntimeException...)
         }
     }
