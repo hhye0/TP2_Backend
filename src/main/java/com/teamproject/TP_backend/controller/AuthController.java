@@ -25,11 +25,11 @@ public class AuthController {
     private final JwtUtil jwtUtil;                             // JWT 토큰 생성 유틸리티
     private final UserService userService;                     // 사용자 관련 서비스 로직 처리
 
-//     로그인 처리 엔드포인트
-//     - 이메일/비밀번호로 인증을 시도하고 성공 시 JWT 토큰 발급
-//     @param dto 로그인 요청 DTO (email, password 포함)
-//     @return JWT 토큰을 포함한 응답
-@PostMapping("/login")
+    //     로그인 처리 엔드포인트
+    //     - 이메일/비밀번호로 인증을 시도하고 성공 시 JWT 토큰 발급
+    //     @param dto 로그인 요청 DTO (email, password 포함)
+    //     @return JWT 토큰을 포함한 응답
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO dto) {
         // 인증 객체 생성 및 검증
         Authentication authentication = authenticationManager.authenticate(
@@ -46,10 +46,10 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("token", token));
     }
 
-// 회원가입 처리 엔드포인트
-// - 사용자 정보를 DB에 저장
-// @param dto 회원가입 요청 DTO (name, email, password 포함)
-// @return 성공 메시지 반환
+    // 회원가입 처리 엔드포인트
+    // - 사용자 정보를 DB에 저장
+    // @param dto 회원가입 요청 DTO (name, email, password 포함)
+    // @return 성공 메시지 반환
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid SignupRequestDTO dto) {
         userService.signup(dto);

@@ -42,4 +42,7 @@ public class MeetingDTO {
     private Long hostId; // 모임을 생성한 호스트의 사용자 ID
 
     private String hostEmail; // 모임 호스트의 이메일 (프론트 노출용)
+
+    private String channelUrl; // Sendbird 채널 URL (프론트에서 채팅 입장에 사용)
+
 }

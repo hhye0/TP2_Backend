@@ -18,11 +18,11 @@ public class MeetingMemberController {
 
     private final MeetingMemberService meetingMemberService;
 
-//     모임 참여 신청 API
-//     - 로그인한 사용자가 특정 모임에 참여를 요청
-//     @param meetingId 신청할 모임 ID
-//     @param userDetails 현재 로그인한 사용자 정보
-//     @return 성공 메시지
+    //     모임 참여 신청 API
+    //     - 로그인한 사용자가 특정 모임에 참여를 요청
+    //     @param meetingId 신청할 모임 ID
+    //     @param userDetails 현재 로그인한 사용자 정보
+    //     @return 성공 메시지
     @PostMapping("/{meetingId}/join")
     public ResponseEntity<String> joinMeeting(
             @PathVariable Long meetingId,
@@ -31,12 +31,12 @@ public class MeetingMemberController {
         return ResponseEntity.ok("참여 신청이 완료되었습니다.");
     }
 
-//     모임 참여 수락/거절 응답 API
-//     - 호스트가 특정 유저의 참여 요청에 대해 승인 또는 거절
-//     @param meetingId 모임 ID
-//     @param userId 참여 요청한 사용자 ID
-//     @param approve true: 수락, false: 거절
-//     @return 200 OK 응답
+    //     모임 참여 수락/거절 응답 API
+    //     - 호스트가 특정 유저의 참여 요청에 대해 승인 또는 거절
+    //     @param meetingId 모임 ID
+    //     @param userId 참여 요청한 사용자 ID
+    //     @param approve true: 수락, false: 거절
+    //     @return 200 OK 응답
     @PostMapping("/{meetingId}/respond")
     public ResponseEntity<Void> respondToJoin(
             @PathVariable Long meetingId,
@@ -56,5 +56,4 @@ public class MeetingMemberController {
         meetingMemberService.leaveMeeting(meetingId, user.getId()); // 서비스 호출
         return ResponseEntity.ok().build(); // 성공 응답 반환
     }
-
 }

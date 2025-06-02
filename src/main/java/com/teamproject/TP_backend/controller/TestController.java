@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class TestController {
 
-//     인증 테스트 엔드포인트
-//     - 토큰이 필요한 API로, 인증 성공 시 문자열을 반환
-//     - Spring Security 설정에서 해당 엔드포인트에 인증 필터가 적용되어 있어야 함.
-//     @return "인증 성공!" 문자열
+    //     인증 테스트 엔드포인트
+    //     - 토큰이 필요한 API로, 인증 성공 시 문자열을 반환
+    //     - Spring Security 설정에서 해당 엔드포인트에 인증 필터가 적용되어 있어야 함.
+    //     @return "인증 성공!" 문자열
     @GetMapping("/test")
     public ResponseEntity<String> testAuth() {
         return ResponseEntity.ok("인증 성공!");

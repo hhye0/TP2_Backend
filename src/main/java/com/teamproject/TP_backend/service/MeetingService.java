@@ -5,11 +5,9 @@ import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
-import com.teamproject.TP_backend.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import org.json.JSONObject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +19,13 @@ public class MeetingService {
 
     private final MeetingRepository meetingRepository;
     private final UserRepository userRepository; // 사용자 정보 조회용 (호스트 설정 등)
-    private final ChatService chatService;
 
     //     전체 모임 리스트 조회
     //     @return 모든 모임의 MeetingDTO 리스트
     public List<MeetingDTO> getAllMeetings() {
-        return meetingRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return meetingRepository.findAll().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     //     단일 모임 조회
@@ -34,7 +33,8 @@ public class MeetingService {
     //     @return 해당 모임의 DTO
     //     @throws RuntimeException 모임이 없을 경우
     public MeetingDTO getMeeting(Long id) {
-        Meeting meeting = meetingRepository.findById(id).orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
         return toDTO(meeting);
     }
 
@@ -43,22 +43,20 @@ public class MeetingService {
     //     @param user 현재 로그인한 사용자 (호스트)
     //     @return 생성된 모임의 DTO
     public MeetingDTO createMeeting(MeetingDTO dto, User user) {
-        Meeting meeting = Meeting.builder().title(dto.getTitle()).host(user) // 현재 로그인한 유저를 호스트로 설정
-                .bookTitle(dto.getBookTitle()).bookAuthor(dto.getBookAuthor()).bookCover(dto.getBookCover()).bookCategory(dto.getBookCategory()).startDate(dto.getStartDate()).maxMembers(dto.getMaxMembers()).description(dto.getDescription())         // 모임 소개글 추가
+        Meeting meeting = Meeting.builder()
+                .title(dto.getTitle())
+                .host(user) // 현재 로그인한 유저를 호스트로 설정
+                .bookTitle(dto.getBookTitle())
+                .bookAuthor(dto.getBookAuthor())
+                .bookCover(dto.getBookCover())
+                .bookCategory(dto.getBookCategory())
+                .startDate(dto.getStartDate())
+                .maxMembers(dto.getMaxMembers())
+                .description(dto.getDescription())         // 모임 소개글 추가
                 .isActive(true)                            // 생성 시 활성화 상태
                 .build();
 
         Meeting saved = meetingRepository.save(meeting);
-
-        // Sendbird 채널 생성
-        String channelName = "meeting-" + saved.getId();
-        String responseJson = chatService.createGroupChannel(channelName, List.of(String.valueOf(user.getId())));
-
-        // 응답에서 channel_url 추출 후 저장
-        String channelUrl = extractChannelUrlFromJson(responseJson);
-        saved.setChannelUrl(channelUrl);
-        meetingRepository.save(saved); // 다시 저장
-
         return toDTO(saved); // Entity → DTO 변환 후 반환
     }
 
@@ -69,7 +67,8 @@ public class MeetingService {
     //     @return 수정된 모임의 DTO
     //     @throws RuntimeException 권한 없거나 모임이 없을 경우
     public MeetingDTO updateMeeting(Long id, MeetingDTO dto, User user) {
-        Meeting meeting = meetingRepository.findById(id).orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
 
         // 권한 검사: 로그인한 사용자와 모임 호스트가 일치해야 수정 가능
         if (!meeting.getHost().getId().equals(user.getId())) {
@@ -97,7 +96,8 @@ public class MeetingService {
     //     @param id 삭제할 모임 ID
     //     @param user 현재 로그인한 사용자 (권한 체크)
     public void deleteMeeting(Long id, User user) {
-        Meeting meeting = meetingRepository.findById(id).orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
 
         if (!meeting.getHost().getId().equals(user.getId())) {
             throw new RuntimeException("모임을 삭제할 권한이 없습니다.");
@@ -106,18 +106,23 @@ public class MeetingService {
         meetingRepository.delete(meeting); // 안전하게 삭제
     }
 
-    private String extractChannelUrlFromJson(String json) {
-        JSONObject obj = new JSONObject(json);
-        return obj.getString("channel_url");
-    }
-
-    //     Meeting 엔티티 → MeetingDTO로 변환
-    //     @param meeting 변환 대상 엔티티
-    //     @return DTO 객체
+    // Meeting 엔티티 → MeetingDTO로 변환
+    // @param meeting 변환 대상 엔티티
     private MeetingDTO toDTO(Meeting meeting) {
-        return MeetingDTO.builder().id(meeting.getId()).title(meeting.getTitle()).bookTitle(meeting.getBookTitle()).bookAuthor(meeting.getBookAuthor()).bookCover(meeting.getBookCover()).bookCategory(meeting.getBookCategory()).startDate(meeting.getStartDate()).maxMembers(meeting.getMaxMembers()).active(meeting.isActive()).hostId(meeting.getHost().getId())             // 호스트 ID
-                .hostEmail(meeting.getHost().getEmail())       // 호스트 이메일 추가
-                .description(meeting.getDescription())         // 모임 소개글 추가
+        return MeetingDTO.builder()
+                .id(meeting.getId())
+                .title(meeting.getTitle())
+                .bookTitle(meeting.getBookTitle())
+                .bookAuthor(meeting.getBookAuthor())
+                .bookCover(meeting.getBookCover())
+                .bookCategory(meeting.getBookCategory())
+                .startDate(meeting.getStartDate())
+                .maxMembers(meeting.getMaxMembers())
+                .active(meeting.isActive())
+                .hostId(meeting.getHost().getId())               // 호스트 ID
+                .hostEmail(meeting.getHost().getEmail())         // 호스트 이메일
+                .description(meeting.getDescription())           // 모임 소개글
+                .channelUrl(meeting.getChannelUrl())             // Sendbird 채널 URL (프론트에서 채팅 입장에 필요)
                 .build();
     }
 }
