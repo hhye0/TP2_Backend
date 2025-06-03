@@ -3,7 +3,9 @@ package com.teamproject.TP_backend.repository;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.MeetingMember;
 import com.teamproject.TP_backend.domain.entity.User;
+import com.teamproject.TP_backend.domain.enums.GroupRole;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.teamproject.TP_backend.domain.enums.GroupRole;
 
 import java.util.Optional;
 
@@ -22,4 +24,7 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
 //     @param userId 사용자 ID
 //     @return 참여 정보가 존재하면 Optional로 반환
     Optional<MeetingMember> findByMeetingIdAndUserId(Long meetingId, Long userId);
+
+    boolean existsByMeetingIdAndUserIdAndRole(Long meetingId, Long userId, GroupRole role);
+
 }
