@@ -55,7 +55,7 @@ public class ChatService {
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
 
-        // ✅ 바로 여기에 로그 추가!
+        // 바로 여기에 로그 추가!
         log.info("Sendbird 응답: {}", response.getBody());
 
         try {

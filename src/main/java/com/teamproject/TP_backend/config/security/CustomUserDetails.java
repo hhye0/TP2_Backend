@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+// Spring Security의 UserDetails를 구현한 사용자 정의 클래스
+// JWT 인증 이후 SecurityContext에 저장되는 사용자 정보 표현
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
@@ -53,7 +55,5 @@ public class CustomUserDetails implements UserDetails {
 
     public User getUser() {
         return user;
-    }
-
-
+    } // 로그인된 사용자
 }

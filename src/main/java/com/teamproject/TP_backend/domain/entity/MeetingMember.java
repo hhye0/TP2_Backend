@@ -1,5 +1,6 @@
 package com.teamproject.TP_backend.domain.entity;
 
+import com.teamproject.TP_backend.domain.enums.GroupRole;
 import jakarta.persistence.*;
 import lombok.*;
 import com.teamproject.TP_backend.domain.enums.ParticipationStatus;
@@ -40,6 +41,10 @@ public class MeetingMember {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ParticipationStatus status; // 참여 상태 (대기/승인/거절)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GroupRole role;
 
     //     정적 팩토리 메서드로 기본 참여 정보 생성
     //     - 상태는 기본값으로 PENDING
