@@ -3,6 +3,7 @@ package com.teamproject.TP_backend.controller;
 import com.teamproject.TP_backend.config.CurrentUser;
 import com.teamproject.TP_backend.config.security.CustomUserDetails;
 import com.teamproject.TP_backend.controller.dto.DiscussionScheduleDTO;
+import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.service.DiscussionScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +37,9 @@ public class DiscussionScheduleController {
     public ResponseEntity<DiscussionScheduleDTO> createSchedule(
             @PathVariable Long meetingId,
             @RequestBody DiscussionScheduleDTO dto,
-            @CurrentUser CustomUserDetails userDetails) {
+            @CurrentUser User user) {
 
-        Long userId = userDetails.getUser().getId(); // JWT에서 가져온 현재 유저 ID
+        Long userId = user.getId();
         return ResponseEntity.ok(discussionScheduleService.createSchedule(meetingId, dto, userId));
     }
 

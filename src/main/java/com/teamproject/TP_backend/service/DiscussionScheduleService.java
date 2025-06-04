@@ -4,6 +4,7 @@ import com.teamproject.TP_backend.controller.dto.DiscussionScheduleDTO;
 import com.teamproject.TP_backend.domain.entity.DiscussionSchedule;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.enums.GroupRole;
+import com.teamproject.TP_backend.exception.PastDateScheduleException;
 import com.teamproject.TP_backend.repository.DiscussionScheduleRepository;
 import com.teamproject.TP_backend.repository.MeetingMemberRepository;
 import com.teamproject.TP_backend.repository.MeetingRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,11 @@ public class DiscussionScheduleService {
     public DiscussionScheduleDTO createSchedule(Long meetingId, DiscussionScheduleDTO dto, Long userId) {
         validateHost(meetingId, userId);
 
+        // 과거 날짜로는 생성 불가
+        if (dto.date().isBefore(LocalDate.now())) {
+            throw new PastDateScheduleException("과거 날짜로는 일정을 생성할 수 없습니다.");
+        }
+
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
 
@@ -50,9 +57,12 @@ public class DiscussionScheduleService {
                 .date(dto.date())
                 .time(dto.time()) // 추가
                 .memo(dto.memo())
+                .meeting(meetingRepository.findById(meetingId)
+                        .orElseThrow(() -> new IllegalArgumentException("모임이 존재하지 않습니다.")))
                 .build();
 
-        return toDTO(scheduleRepository.save(schedule));
+        scheduleRepository.save(schedule);
+        return DiscussionScheduleDTO.fromEntity(schedule);
     }
 
     // 일정 수정 - 호스트만 가능
@@ -82,11 +92,14 @@ public class DiscussionScheduleService {
 
     // 호스트 권한 검사 메서드
     private void validateHost(Long meetingId, Long userId) {
-        boolean isHost = meetingMemberRepository.existsByMeetingIdAndUserIdAndRole(meetingId, userId, GroupRole.HOST);
-        if (!isHost) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new RuntimeException("모임이 존재하지 않습니다."));
+
+        if (!meeting.getHost().getId().equals(userId)) {
             throw new AccessDeniedException("호스트만 이 작업을 할 수 있습니다.");
         }
     }
+
 
     // DTO 변환 도구
     private DiscussionScheduleDTO toDTO(DiscussionSchedule s) {
