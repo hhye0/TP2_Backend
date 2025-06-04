@@ -42,8 +42,11 @@ public class AuthController {
         // 인증 성공 시 토큰 생성
         String token = jwtUtil.generateToken(authentication);
 
-        // 로그인 결과 토큰, 이름, 닉네임을 JSON 형태로 반환
-        return ResponseEntity.ok(Map.of("token", token));return ResponseEntity.ok(Map.of(
+        // 사용자 정보 조회
+        var user = userService.findByEmail(dto.email());
+
+        // 토큰 + 사용자 정보 반환
+        return ResponseEntity.ok(Map.of(
                 "token", token,
                 "name", user.getName(),
                 "nickname", user.getNickname()

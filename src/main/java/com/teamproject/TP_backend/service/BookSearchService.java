@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamproject.TP_backend.controller.dto.BookDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 // 외부 알라딘 API를 호출해서 책 정보를 검색
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookSearchService {
@@ -47,28 +49,36 @@ public class BookSearchService {
                 .build()
                 .toUri();
 
-        // API GET 요청 수행 후 응답 수신
-        ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
-        System.out.println("Aladin API Response body: " + response.getBody());
-
         try {
+            ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
+            log.info("알라딘 요청 URI: {}", uri);
+            log.info("알라딘 응답 본문: {}", response.getBody());
+
             // 응답 JSON 문자열을 파싱하여 루트 노드 생성
             JsonNode rootNode = new ObjectMapper().readTree(response.getBody());
             JsonNode items = rootNode.get("item"); // 'item' 배열 노드 추출 (책 리스트)
 
             if (items == null || !items.isArray() || items.size() == 0) {
-                throw new RuntimeException("검색 결과 없음. 응답: " + response.getBody());
+                log.warn(" 검색 결과 없음 또는 'item' 배열 누락");
+                return List.of(); // 빈 리스트 반환 (예외 안 던짐)
             }
 
             JsonNode first = items.get(0);
-            return List.of(new BookDTO(
-                    first.has("isbn13") ? first.get("isbn13").asText() : first.get("isbn").asText(),
-                    first.get("title").asText(),
-                    first.get("author").asText(),
-                    first.has("coverLargeUrl") ? first.get("coverLargeUrl").asText() : first.get("cover").asText()
-            ));
+
+            // 안전한 필드 추출 및 기본값 지정
+            String isbn = first.hasNonNull("isbn13") ? first.get("isbn13").asText() :
+                    first.hasNonNull("isbn") ? first.get("isbn").asText() : "NO_ISBN";
+
+            String titleResult = first.hasNonNull("title") ? first.get("title").asText() : "제목 없음";
+            String author = first.hasNonNull("author") ? first.get("author").asText() : "저자 미상";
+            String cover = first.hasNonNull("coverLargeUrl") ? first.get("coverLargeUrl").asText() :
+                    first.hasNonNull("cover") ? first.get("cover").asText() : "";
+
+            return List.of(new BookDTO(isbn, titleResult, author, cover));
+
         } catch (Exception e) {
-            throw new RuntimeException("API 응답: " + response.getBody(), e);
+            log.error("알라딘 API 처리 중 예외 발생", e);
+            throw new RuntimeException("책 검색 실패: " + e.getMessage());
         }
     }
 }
