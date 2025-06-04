@@ -94,7 +94,6 @@ public class MeetingService {
         return toDTO(saved); // DTO 변환 후 반환
     }
 
-
     //     모임 수정
     //     @param id 수정 대상 모임 ID
     //     @param dto 수정할 정보가 담긴 DTO
