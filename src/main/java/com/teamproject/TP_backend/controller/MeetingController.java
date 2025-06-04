@@ -78,4 +78,13 @@ public class MeetingController {
         meetingService.deleteMeeting(id, user);
         return ResponseEntity.noContent().build();
     }
+
+    // 모임 제목, 닉네임 검색
+    @GetMapping("/search")
+    public ResponseEntity<List<MeetingDTO>> searchMeetings(
+            @RequestParam(defaultValue = "") String title,
+            @RequestParam(defaultValue = "") String hostNickname
+    ) {
+        return ResponseEntity.ok(meetingService.searchMeeting(title, hostNickname));
+    }
 }

@@ -129,6 +129,30 @@ public class MeetingService {
         meetingRepository.delete(meeting); // 안전하게 삭제
     }
 
+    // 모임 제목, 닉네임 검색
+    public List<MeetingDTO> searchMeeting(String title, String hostNickname) {
+        boolean titleEmpty = (title == null || title.isBlank());
+        boolean nicknameEmpty = (hostNickname == null || hostNickname.isBlank());
+
+        List<Meeting> meetings;
+
+        if (titleEmpty && nicknameEmpty) {
+            meetings = meetingRepository.findAll(); // ✅ 전체 조회 fallback
+        } else if (titleEmpty) {
+            meetings = meetingRepository.findByHost_NicknameContainingIgnoreCase(hostNickname);
+        } else if (nicknameEmpty) {
+            meetings = meetingRepository.findByTitleContainingIgnoreCase(title);
+        } else {
+            meetings = meetingRepository.findByTitleContainingIgnoreCaseAndHost_NicknameContainingIgnoreCase(title, hostNickname);
+        }
+
+        return meetings.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
+
     // Meeting 엔티티 → MeetingDTO로 변환
     // @param meeting 변환 대상 엔티티
     private MeetingDTO toDTO(Meeting meeting) {
