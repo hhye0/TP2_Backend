@@ -27,9 +27,9 @@ public class DiscussionScheduleController {
     }
 
     // [GET] 특정 일정 상세 조회
-    @GetMapping("/{scheduleId}")
-    public ResponseEntity<DiscussionScheduleDTO> getDiscussion(@PathVariable Long id) {
-        return ResponseEntity.ok(discussionScheduleService.getById(id));
+    @GetMapping("/schedules/{scheduleId}")
+    public ResponseEntity<DiscussionScheduleDTO> getDiscussion(@PathVariable Long scheduleId) {
+        return ResponseEntity.ok(discussionScheduleService.getById(scheduleId));
     }
 
     // [POST] 토론 일정 생성 - 호스트만 가능

@@ -4,6 +4,7 @@ import com.teamproject.TP_backend.config.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/books/search").permitAll() // 책 검색은 누구나 가능
                         .requestMatchers("/api/meetings/search").permitAll() // 모임 검색 누구나 허용
                         .requestMatchers("/api/meetings").permitAll() // 모임 조회 누구나 허용
+                        .requestMatchers(HttpMethod.GET, "/api/meetings/**").permitAll() // 비회원도 조회 가능
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // 관리자만 접근 가능
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // 일반 사용자 또는 관리자 접근 가능
                         .requestMatchers("/api/meetings/**").hasAnyRole("USER", "ADMIN") // 독서모임 관련 요청도 로그인 필수
