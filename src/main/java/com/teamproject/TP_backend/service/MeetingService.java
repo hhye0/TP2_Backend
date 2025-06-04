@@ -161,7 +161,7 @@ public class MeetingService {
         List<Meeting> meetings;
 
         if (titleEmpty && nicknameEmpty) {
-            meetings = meetingRepository.findAll(); // ✅ 전체 조회 fallback
+            meetings = meetingRepository.findAll(); // 전체 조회 fallback
         } else if (titleEmpty) {
             meetings = meetingRepository.findByHost_NicknameContainingIgnoreCase(hostNickname);
         } else if (nicknameEmpty) {

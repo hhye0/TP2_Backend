@@ -36,7 +36,6 @@ public class MeetingMemberController {
         }
     }
 
-
     //     모임 참여 수락/거절 응답 API
     //     - 호스트가 특정 유저의 참여 요청에 대해 승인 또는 거절
     //     @param meetingId 모임 ID

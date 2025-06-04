@@ -54,6 +54,7 @@ public class MeetingMember {
                 .user(user)
                 .joinedAt(LocalDate.now())
                 .status(ParticipationStatus.PENDING)
+                .role(GroupRole.MEMBER)
                 .build();
     }
 

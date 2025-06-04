@@ -47,8 +47,6 @@ public class UserService {
                 .password(passwordEncoder.encode(dto.password())) // 비밀번호 해싱
                 .role(UserRole.USER) // 기본 역할 USER
                 .build();
-
-
         userRepository.save(user);
     }
 
