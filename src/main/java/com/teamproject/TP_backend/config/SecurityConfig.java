@@ -44,7 +44,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/meetings/**").hasAnyRole("USER", "ADMIN") // 독서모임 관련 요청도 로그인 필수
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
                 )
-
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
