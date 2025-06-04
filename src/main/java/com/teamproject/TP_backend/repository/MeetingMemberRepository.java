@@ -3,9 +3,11 @@ package com.teamproject.TP_backend.repository;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.MeetingMember;
 import com.teamproject.TP_backend.domain.entity.User;
+import com.teamproject.TP_backend.domain.enums.ParticipationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.List;
 
 // MeetingMember 엔티티에 대한 JPA Repository 인터페이스
 // - 모임 참여 여부 확인, 특정 사용자-모임 간의 참여 정보 조회 등을 지원
@@ -22,4 +24,7 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
 //     @param userId 사용자 ID
 //     @return 참여 정보가 존재하면 Optional로 반환
     Optional<MeetingMember> findByMeetingIdAndUserId(Long meetingId, Long userId);
+
+    // 아직 수락되지 않은 신청자들 조회
+    List<MeetingMember> findByMeetingIdAndStatus(Long meetingId, ParticipationStatus status);
 }

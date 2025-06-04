@@ -2,11 +2,13 @@ package com.teamproject.TP_backend.service;
 
 import com.teamproject.TP_backend.controller.dto.MeetingDTO;
 import com.teamproject.TP_backend.controller.dto.ParticipantDTO;
+import com.teamproject.TP_backend.controller.dto.ApplicantDTO;
 import com.teamproject.TP_backend.domain.entity.Meeting;
 import com.teamproject.TP_backend.domain.entity.User;
+import com.teamproject.TP_backend.domain.enums.ParticipationStatus;
+import com.teamproject.TP_backend.repository.MeetingMemberRepository;
 import com.teamproject.TP_backend.repository.MeetingRepository;
 import com.teamproject.TP_backend.repository.UserRepository;
-import com.teamproject.TP_backend.controller.dto.ParticipantDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final UserRepository userRepository; // 사용자 정보 조회용 (호스트 설정 등)
     private final ChatService chatService;
+    private final MeetingMemberRepository meetingMemberRepository;
 
     //     전체 모임 리스트 조회
     //     @return 모든 모임의 MeetingDTO 리스트
@@ -39,6 +42,24 @@ public class MeetingService {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
         return toDTO(meeting);
+    }
+
+    // 수락되지 않은 신청자들 리스트 조회
+    public List<ApplicantDTO> getApplicants(Long meetingId, User user) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new RuntimeException("모임을 찾을 수 없습니다."));
+
+        if (!meeting.getHost().getId().equals(user.getId())) {
+            throw new RuntimeException("해당 모임의 신청자를 조회할 권한이 없습니다.");
+        }
+
+        return meetingMemberRepository.findByMeetingIdAndStatus(meetingId, ParticipationStatus.PENDING)
+                .stream()
+                .map(mm -> {
+                    var u = mm.getUser();
+                    return new ApplicantDTO(u.getId(), u.getNickname(), u.getEmail(), mm.getStatus());
+                })
+                .collect(Collectors.toList());
     }
 
     //     모임 생성
@@ -144,6 +165,7 @@ public class MeetingService {
                 .active(meeting.isActive())
                 .hostId(meeting.getHost().getId())               // 호스트 ID
                 .hostEmail(meeting.getHost().getEmail())         // 호스트 이메일
+                .hostNickname(meeting.getHost().getNickname())   // 호스트 닉네임
                 .description(meeting.getDescription())           // 모임 소개글
                 .channelUrl(meeting.getChannelUrl())             // Sendbird 채널 URL (프론트에서 채팅 입장에 필요)
 

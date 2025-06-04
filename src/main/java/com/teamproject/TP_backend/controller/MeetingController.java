@@ -1,6 +1,7 @@
 package com.teamproject.TP_backend.controller;
 
 import com.teamproject.TP_backend.config.CurrentUser;
+import com.teamproject.TP_backend.controller.dto.ApplicantDTO;
 import com.teamproject.TP_backend.controller.dto.MeetingDTO;
 import com.teamproject.TP_backend.domain.entity.User;
 import com.teamproject.TP_backend.service.MeetingService;
@@ -35,6 +36,13 @@ public class MeetingController {
     @GetMapping("/{id}")
     public ResponseEntity<MeetingDTO> getMeeting(@PathVariable Long id) {
         return ResponseEntity.ok(meetingService.getMeeting(id));
+    }
+
+    // 수락되지 않은 신청자들 리스트 조회 API
+    @GetMapping("/{meetingId}/applicants")
+    public ResponseEntity<List<ApplicantDTO>> getApplicants(@PathVariable Long meetingId,
+                                                            @CurrentUser User user) {
+        return ResponseEntity.ok(meetingService.getApplicants(meetingId, user));
     }
 
     //     모임 생성 API
