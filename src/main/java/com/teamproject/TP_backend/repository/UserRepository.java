@@ -29,6 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //     @return true면 이미 존재
     boolean existsByNickname(String nickname);
 
+    Optional<User> findByNickname(String nickname);
 
     //fetch join
     @Query("select u from User u left join fetch u.hostedMeetings where u.id = :id")
