@@ -165,4 +165,11 @@ public class UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
+
+    // 이메일로 사용자 정보 조회 (토큰 응답 시 nickname 포함 목적)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("해당 이메일의 유저가 없습니다."));
+    }
+
 }

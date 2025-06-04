@@ -42,8 +42,15 @@ public class AuthController {
         // 인증 성공 시 토큰 생성
         String token = jwtUtil.generateToken(authentication);
 
-        // 토큰을 JSON 형태로 반환
-        return ResponseEntity.ok(Map.of("token", token));
+        // 사용자 정보 조회
+        var user = userService.findByEmail(dto.email());
+
+        // 토큰 + 사용자 정보 반환
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "name", user.getName(),
+                "nickname", user.getNickname()
+        ));
     }
 
     // 회원가입 처리 엔드포인트
