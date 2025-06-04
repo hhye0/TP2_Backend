@@ -35,9 +35,13 @@ public class UserController {
     // 사용자가 참여한 모임 목록 조회
     @GetMapping("/me/meetings/joined")
     public ResponseEntity<List<MeetingDTO>> getJoinedMeetings(@CurrentUser User user) {
-        return ResponseEntity.ok(userService.getJoinedMeetings(user));
+        if (user == null || user.getId() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        User userEntity = userService.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        return ResponseEntity.ok(userService.getJoinedMeetings(userEntity));
     }
-
     // 호스트인 모임 목록 조회
     @GetMapping("/me/hosted")
     public ResponseEntity<List<MeetingDTO>> getHostedMeetings(@CurrentUser User user) {

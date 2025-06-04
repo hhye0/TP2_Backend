@@ -2,6 +2,8 @@ package com.teamproject.TP_backend.repository;
 
 import com.teamproject.TP_backend.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -26,4 +28,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //     @param nickname 사용자 닉네임
 //     @return true면 이미 존재
     boolean existsByNickname(String nickname);
+
+
+    //fetch join
+    @Query("select u from User u left join fetch u.hostedMeetings where u.id = :id")
+    Optional<User> findWithHostedMeetingsById(@Param("id") Long id);
+
+    @Query("select u from User u left join fetch u.meetingMemberships where u.id = :id")
+    Optional<User> findWithMeetingMembershipsById(@Param("id") Long id);
 }

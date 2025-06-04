@@ -12,6 +12,7 @@ import com.teamproject.TP_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -111,17 +112,25 @@ public class UserService {
     }
 
     // 사용자가 참여한 모임 목록 조회
+    @Transactional(readOnly = true)
     public List<MeetingDTO> getJoinedMeetings(User user) {
-        return user.getMeetingMemberships().stream()
+        User userWithMemberships = userRepository.findWithMeetingMembershipsById(user.getId())
+                .orElseThrow(() -> new RuntimeException("사용자 정보 없음"));
+
+        return userWithMemberships.getMeetingMemberships().stream()
                 .filter(member -> member.getStatus() == ParticipationStatus.APPROVED)
-                .map(member -> member.getMeeting())
+                .map(MeetingMember::getMeeting)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     //  현재 사용자가 호스트로 있는 모임 목록을 조회
+    @Transactional(readOnly = true)
     public List<MeetingDTO> getHostedMeetings(User user) {
-        return user.getHostedMeetings().stream()
+        User userWithMeetings = userRepository.findWithHostedMeetingsById(user.getId())
+                .orElseThrow(() -> new RuntimeException("사용자 정보 없음"));
+
+        return userWithMeetings.getHostedMeetings().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
