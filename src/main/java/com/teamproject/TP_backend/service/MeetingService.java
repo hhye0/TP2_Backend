@@ -67,6 +67,10 @@ public class MeetingService {
     //     @param user 현재 로그인한 사용자 (호스트)
     //     @return 생성된 모임의 DTO
     public MeetingDTO createMeeting(MeetingDTO dto, User user) {
+        // 닉네임 포함된 User 객체를 다시 조회
+        User fullUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
         // 1. 모임 엔티티 생성 (채널 URL 없이 먼저 저장)
         Meeting meeting = Meeting.builder()
                 .title(dto.getTitle())
@@ -149,6 +153,28 @@ public class MeetingService {
         meetingRepository.delete(meeting); // 안전하게 삭제
     }
 
+    // 모임 제목, 닉네임 검색
+    public List<MeetingDTO> searchMeeting(String title, String hostNickname) {
+        boolean titleEmpty = (title == null || title.isBlank());
+        boolean nicknameEmpty = (hostNickname == null || hostNickname.isBlank());
+
+        List<Meeting> meetings;
+
+        if (titleEmpty && nicknameEmpty) {
+            meetings = meetingRepository.findAll(); // ✅ 전체 조회 fallback
+        } else if (titleEmpty) {
+            meetings = meetingRepository.findByHost_NicknameContainingIgnoreCase(hostNickname);
+        } else if (nicknameEmpty) {
+            meetings = meetingRepository.findByTitleContainingIgnoreCase(title);
+        } else {
+            meetings = meetingRepository.findByTitleContainingIgnoreCaseAndHost_NicknameContainingIgnoreCase(title, hostNickname);
+        }
+
+        return meetings.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
     // Meeting 엔티티 → MeetingDTO로 변환
     // @param meeting 변환 대상 엔티티
     private MeetingDTO toDTO(Meeting meeting) {
@@ -163,6 +189,7 @@ public class MeetingService {
                 .maxMembers(meeting.getMaxMembers())
                 .active(meeting.isActive())
                 .hostId(meeting.getHost().getId())               // 호스트 ID
+                .hostNickname(meeting.getHost().getNickname())   // 호스트 닉네임
                 .hostEmail(meeting.getHost().getEmail())         // 호스트 이메일
                 .hostNickname(meeting.getHost().getNickname())   // 호스트 닉네임
                 .description(meeting.getDescription())           // 모임 소개글
