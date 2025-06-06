@@ -15,25 +15,25 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/notices")
+@RequestMapping("/api/meetings/{meetingId}/notices")
 public class NoticeController {
 
     private final NoticeService noticeService;
 
-    // 공지사항 작성 (POST)
+    // 공지사항 등록 (POST)
     @PostMapping
     public ResponseEntity<NoticeResponseDTO> createNotice(
+            @PathVariable Long meetingId,
             @RequestBody @Valid NoticeRequestDTO dto,
             @CurrentUser User user) {
-
-        NoticeResponseDTO response = noticeService.createNotice(dto, user.getNickname());
+        NoticeResponseDTO response = noticeService.createNotice(dto, meetingId, user.getNickname());
         return ResponseEntity.ok(response);
     }
 
-    // 공지사항 전체 조회 (GET)
+    // 모임별 공지사항 전체 조회 (GET)
     @GetMapping
-    public ResponseEntity<List<NoticeResponseDTO>> getAllNotices() {
-        List<NoticeResponseDTO> list = noticeService.getAllNotices();
+    public ResponseEntity<List<NoticeResponseDTO>> getNoticesByMeetingId(@PathVariable Long meetingId) {
+        List<NoticeResponseDTO> list = noticeService.getNoticesByMeetingId(meetingId);
         return ResponseEntity.ok(list);
     }
 

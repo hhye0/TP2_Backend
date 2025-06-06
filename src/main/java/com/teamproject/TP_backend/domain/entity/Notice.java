@@ -19,17 +19,23 @@ public class Notice {
 
     private String content;
 
-    // 작성자 정보
+    // 작성자 (User 엔티티와 연관관계)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
-    private User author;
+    @JoinColumn(name = "writer_id", nullable = false)
+    private User writer;
+
+    // 소속 모임
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "meeting_id")
+    private Meeting meeting;
 
     // 정적 팩토리 메서드
-    public static Notice create(String title, String content, User author) {
+    public static Notice create(String title, String content, User writer, Meeting meeting) {
         Notice notice = new Notice();
         notice.title = title;
         notice.content = content;
-        notice.author = author;
+        notice.meeting = meeting;
+        notice.writer = writer;
         return notice;
     }
 }
