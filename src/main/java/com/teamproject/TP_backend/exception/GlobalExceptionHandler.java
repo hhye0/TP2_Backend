@@ -2,6 +2,7 @@ package com.teamproject.TP_backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -48,6 +49,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PastDateScheduleException.class)
     public ResponseEntity<?> handlePastDateException(PastDateScheduleException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
+        // 메시지 커스터마이징 가능
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("권한이 없습니다: " + ex.getMessage());
     }
 
 }

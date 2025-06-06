@@ -1,6 +1,7 @@
 package com.teamproject.TP_backend.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.teamproject.TP_backend.domain.entity.Meeting;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,10 @@ import java.util.List;
 @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // ISO 8601 형식으로 날짜 직렬화
 public class MeetingDTO {
 
+    // 응답용 (DB 저장 후 클라이언트로 보내는 값)
     private Long id; // 모임 고유 ID (PK)
 
+    // 요청용 (클라이언트가 보내는 값, 생성/수정 시 필수)
     @NotBlank(message = "모임명은 필수입니다.")
     private String title; // 모임명
 
@@ -37,8 +40,10 @@ public class MeetingDTO {
 
     private boolean active; // 모임 활성화 여부 (false면 삭제됨으로 간주)
 
-    private List<ParticipantDTO> participants; // 참여자 목록 DTO 리스트
+    // 응답용 - 참여자 목록 DTO 리스트 (조회 시만 사용)
+    private List<ParticipantDTO> participants;
 
+    // 응답용 - 호스트 정보 (조회 시만 사용)
     private Long hostId; // 모임을 생성한 호스트의 사용자 ID
 
     private String hostNickname; // 모임 호스트의 닉네임 (프론트 노출용)
@@ -47,4 +52,26 @@ public class MeetingDTO {
 
     private String channelUrl; // Sendbird 채널 URL (프론트에서 채팅 입장에 사용)
 
+    // 정적 팩토리 메서드
+    public static MeetingDTO from(Meeting meeting) {
+        if (meeting == null) return null;
+
+        return MeetingDTO.builder()
+                .id(meeting.getId())
+                .title(meeting.getTitle())
+                .description(meeting.getDescription())
+                .bookTitle(meeting.getBookTitle())
+                .bookAuthor(meeting.getBookAuthor())
+                .bookCover(meeting.getBookCover())
+                .bookCategory(meeting.getBookCategory())
+                .startDate(meeting.getStartDate())
+                .maxMembers(meeting.getMaxMembers())
+                .active(meeting.isActive())
+                .hostId(meeting.getHost() != null ? meeting.getHost().getId() : null)
+                .hostNickname(meeting.getHost() != null ? meeting.getHost().getNickname() : null)
+                .hostEmail(meeting.getHost() != null ? meeting.getHost().getEmail() : null)
+                .channelUrl(meeting.getChannelUrl())
+                // participants는 필요에 따라 변환해서 넣어줘야 함
+                .build();
+    }
 }

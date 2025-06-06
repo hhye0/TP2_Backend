@@ -17,6 +17,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //     @return 이메일에 해당하는 사용자 정보
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByName(String name);
+
+
 //     해당 이메일이 이미 존재하는지 여부 확인
 //     - 회원가입 시 중복 이메일 검사용
 //     @param email 사용자 이메일
