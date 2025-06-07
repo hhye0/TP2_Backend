@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +26,22 @@ public class AdminController {
         List<MeetingDTO> meetings = adminService.getAllMeetings(user);
         return ResponseEntity.ok(meetings);
     }
+
+    // 모임 삭제 (관리자 권한)
+    @DeleteMapping("/meetings/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteMeeting(@PathVariable Long id) {
+        adminService.deleteMeeting(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 채팅 기능 ON/OFF 토글 (관리자 권한)
+    @PatchMapping("/meetings/{id}/toggle-chat")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> toggleChat(@PathVariable Long id) {
+        adminService.toggleChat(id);
+        return ResponseEntity.ok().build();
+    }
+
 }
 

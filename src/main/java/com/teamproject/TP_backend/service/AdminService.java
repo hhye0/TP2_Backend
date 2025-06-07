@@ -32,4 +32,22 @@ public class AdminService {
                 .map(MeetingDTO::from)
                 .collect(Collectors.toList());
     }
+
+    // 모임 삭제
+    public void deleteMeeting(Long meetingId) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+        meetingRepository.delete(meeting);
+    }
+
+    // 채팅 ON/OFF 토글
+    public void toggleChat(Long meetingId) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+
+        boolean currentStatus = meeting.isChatEnabled();  // chatEnabled가 Meeting에 추가되어야 함
+        meeting.setChatEnabled(!currentStatus);
+
+        meetingRepository.save(meeting);
+    }
 }

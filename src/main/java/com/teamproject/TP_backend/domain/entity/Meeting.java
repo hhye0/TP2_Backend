@@ -54,6 +54,9 @@ public class Meeting {
     @Column(name = "channel_url", length = 255)
     private String channelUrl; // Sendbird 채널 URL
 
+    @Column(name = "chat_enabled", nullable = false)
+    private boolean chatEnabled = true;  // 채팅 On/Off 상태 필드
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt; // 생성일 (자동 설정)
