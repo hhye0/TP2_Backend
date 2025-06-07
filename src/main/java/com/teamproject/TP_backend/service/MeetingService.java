@@ -194,6 +194,7 @@ public class MeetingService {
                 .hostNickname(meeting.getHost().getNickname())   // 호스트 닉네임
                 .description(meeting.getDescription())           // 모임 소개글
                 .channelUrl(meeting.getChannelUrl())             // Sendbird 채널 URL (프론트에서 채팅 입장에 필요)
+                .chatEnabled(meeting.isChatEnabled())
 
                 // 참여자 목록 추가 (isAccepted == true인 멤버만)
                 .participants(
