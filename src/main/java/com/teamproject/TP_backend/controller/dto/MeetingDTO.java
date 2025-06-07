@@ -40,6 +40,8 @@ public class MeetingDTO {
 
     private boolean active; // 모임 활성화 여부 (false면 삭제됨으로 간주)
 
+    private boolean chatEnabled; // 채팅 in/off 상태
+
     // 응답용 - 참여자 목록 DTO 리스트 (조회 시만 사용)
     private List<ParticipantDTO> participants;
 
@@ -67,6 +69,7 @@ public class MeetingDTO {
                 .startDate(meeting.getStartDate())
                 .maxMembers(meeting.getMaxMembers())
                 .active(meeting.isActive())
+                .chatEnabled(meeting.isChatEnabled())
                 .hostId(meeting.getHost() != null ? meeting.getHost().getId() : null)
                 .hostNickname(meeting.getHost() != null ? meeting.getHost().getNickname() : null)
                 .hostEmail(meeting.getHost() != null ? meeting.getHost().getEmail() : null)

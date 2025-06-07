@@ -41,13 +41,18 @@ public class AdminService {
     }
 
     // 채팅 ON/OFF 토글
-    public void toggleChat(Long meetingId) {
+    public void turnOnChat(Long meetingId) {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
-
-        boolean currentStatus = meeting.isChatEnabled();  // chatEnabled가 Meeting에 추가되어야 함
-        meeting.setChatEnabled(!currentStatus);
-
+        meeting.setChatEnabled(true);
         meetingRepository.save(meeting);
     }
+
+    public void turnOffChat(Long meetingId) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+        meeting.setChatEnabled(false);
+        meetingRepository.save(meeting);
+    }
+
 }

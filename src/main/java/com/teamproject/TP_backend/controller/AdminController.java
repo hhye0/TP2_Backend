@@ -36,12 +36,20 @@ public class AdminController {
     }
 
     // 채팅 기능 ON/OFF 토글 (관리자 권한)
-    @PatchMapping("/meetings/{id}/toggle-chat")
+    @PatchMapping("/meetings/{id}/chat-on")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> toggleChat(@PathVariable Long id) {
-        adminService.toggleChat(id);
+    public ResponseEntity<?> turnOnChat(@PathVariable Long id) {
+        adminService.turnOnChat(id);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/meetings/{id}/chat-off")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> turnOffChat(@PathVariable Long id) {
+        adminService.turnOffChat(id);
+        return ResponseEntity.ok().build();
+    }
+
 
 }
 
