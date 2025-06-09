@@ -91,7 +91,7 @@ public class ChatService {
 
     // 사용자가 모임에서 퇴장할때 채팅에서도 퇴장하는 메서드
     // @param channelUrl : Sendbird 채널 고유 URL
-    // @param userId : 퇴장할 사용자 ID (Sendbird user_id와 일치해야 함)
+    // @param userId : 퇴장할 사용자 ID (Sdhendbird user_id와 일치해야 함)
     // @return Sendbird 응답 JSON
     public String leaveChannel(String channelUrl, String userId) {
         String url = getBaseUrl() + "/group_channels/" + channelUrl + "/leave";
@@ -119,5 +119,4 @@ public class ChatService {
         HttpEntity<Void> request = new HttpEntity<>(headers);
         restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
     }
-
 }
