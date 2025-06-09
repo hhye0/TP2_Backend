@@ -34,3 +34,4 @@ spring.datasource.url=jdbc:mariadb://localhost:3306/{DB 명}
 spring.datasource.username={사용자 이름}
 spring.datasource.password={비밀번호}
 ```
+##### 변경
