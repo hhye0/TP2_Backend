@@ -1,9 +1,9 @@
 # ReTalk
 누구나 자유롭게 참여하는 독서 토론 플랫폼 <br>
-### Member
-#### 김민정 : Meeting, Meeting_member, DiscussionSchedule, Chat 기능 담당
-#### 정혜영 : User, BookReview, Notice, Admin 기능 담당
-#### 최지우 : 실시간 채팅 기능 담당
+
+##### @김민정 : Meeting, Meeting_member, DiscussionSchedule, Chat 기능 담당
+##### @정혜영 : User, BookReview, Notice, Admin 기능 담당
+##### @최지우 : 실시간 채팅 기능 담당
 
 ## BackEnd
 #### BackEnd 초기 실행 방법
@@ -69,6 +69,7 @@ spring.datasource.password={비밀번호}
 1. @CurrentUser 커스텀 어노테이션으로 로그인 유저 주입
 2. 관리자(ADMIN), 일반 사용자(USER) 권한 분리
 3. .env 파일 관리
+
 <hr>
 
 ### 기술 스택
@@ -87,7 +88,10 @@ spring.datasource.password={비밀번호}
 | API 테스트 도구 | Postman                |
 
 <hr>
+
 ### 전체 구조
+
+```
 com.teamproject.TP_backend
 ├── config                          # 전역 설정 클래스
 │   ├── security                    # 보안 관련 컴포넌트
@@ -180,3 +184,4 @@ com.teamproject.TP_backend
 │   └── schema.sql                  # 초기 DB 스키마 정의
 │
 └── TpBackendApplication.java       # Spring Boot 메인 클래스
+```
